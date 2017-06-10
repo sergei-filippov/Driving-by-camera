@@ -83,13 +83,13 @@ void loop() {
     }
     midX[y] = int((minX + maxX) / 2);
   }
-  uxmid = midX[0];
+/*  uxmid = midX[0];
   dxmid = midX[96];
   xmid = 20.0 / 76;     //76 строк  и 20
+*/
 
 
-
-  minX = W;
+/*  minX = W;
   minY = H;
   maxX = 0;
   maxY = 0;
@@ -120,17 +120,19 @@ void loop() {
       }
     }
     midX[y] = int((minX + maxX) / 2);
-  }
+  }*/
 
   // draw bounding box
   tv.fill(0);
   if (found) {
-    for (int y = minY; y <= maxY; y++) {
+    /*for (int y = minY; y <= maxY; y++) {
       tv.set_pixel(midX[y] - 3, y, 1);
-    }
+    }*/
+    tv.draw_line(0,20,127,20,1);
+    tv.draw_line(0,90,127,90,1);
 
-    tv.draw_line((maxX + minX) / 2 - 3, maxY, (maxX + minX) / 2 - 3, minY, 1); //vertical line
-
+    tv.draw_line(63,1 ,63 , 95, 1); //vertical line
+    
     /*  tv.draw_line(minX, minY, maxX, minY, 1);
         tv.draw_line(minX, minY, minX, maxY, 1);
         tv.draw_line(maxX, minY, maxX, maxY, 1);
@@ -139,10 +141,10 @@ void loop() {
     // sprintf(s, "%d, %d", ((maxX + minX) / 2), ((maxY + minY) / 2));
     //tv.print(0, 0, s);
   }
-  tv.draw_line(xu, 10, 127 , 10, 1);      // drowing a trapeze
+ /* tv.draw_line(xu, 10, 127 , 10, 1);      // drowing a trapeze
   tv.draw_line(127, 10, 127, 94, 1);
   tv.draw_line(127, 94, xu, 94, 1);
-  tv.draw_line(xu, 94, xu, 10, 1);
+  tv.draw_line(xu, 94, xu, 10, 1);*/
 
 
 

@@ -1,9 +1,13 @@
+#include <pollserial.h>
+
 #include <TVout.h>
 #include <fontALL.h>
 #define W 128
 #define H 96
 
 TVout tv;
+pollserial pserial;
+
 unsigned char x, y;
 unsigned char c;
 unsigned char dX, uX, minY, minX, maxX, maxY;   //d-down u - up
@@ -14,6 +18,9 @@ byte midX[2];
 
 
 void setup()  {
+  
+  Serial3.begin(9600);
+  pserial.begin(9600);
   tv.begin(PAL, W, H);
   initOverlay();
   initInputProcessing();
@@ -65,7 +72,7 @@ void loop() {
   maxX = 0;
   maxY = 0;
   boolean found = 0;
-y = 10;    // the tenth row 
+  y = 10;    // the tenth row
   for (int x = 0; x < W; x++) {
     c = tv.get_pixel(x, y);
     if (c == 1) {
@@ -87,7 +94,7 @@ y = 10;    // the tenth row
   uX = int((minX + maxX) / 2);
   minX = W;
   maxX = 0;
-  y = H-1;
+  y = H - 1;
   for (int x = 0; x < W; x++) {
     c = tv.get_pixel(x, y);
     if (c == 1) {
@@ -116,6 +123,7 @@ y = 10;    // the tenth row
 
 
     tv.draw_line(dX - 3, maxY, uX - 3, minY, 1); // middle line of any object
+    
 
     // tv.draw_line((maxX+minX)/2-3,maxY,(maxX+minX)/2-3,minY,1);     //vertical line
 
@@ -126,17 +134,23 @@ y = 10;    // the tenth row
 
     // sprintf(s, "%d, %d", ((maxX + minX) / 2), ((maxY + minY) / 2));
     //tv.print(0, 0, s);
- 
-   cangle = (float(maxY)-minY)/sqrt(((dX-uX)*(dX-uX)) + ((maxY-minY)*(maxY-minY)));     // скалярное произведение векторов
-    //cangle = sqrt(((float(dX)-uX)*(dX-uX))+((maxY-minY)*(maxY-minY)));
-     if(
-    tv.print(5,5,acos(cangle)*57.2956);
-  }
-  tv.draw_line(0, 0, 0, 95, 1);       // drowing a rectangle
-  tv.draw_line(0, 95, 127, 95, 1);
-  tv.draw_line(127, 95, 127, 0, 1);
-  tv.draw_line(127, 0, 0, 0, 1);
 
-  tv.resume();
-  tv.delay_frame(5);
-}
+    cangle = (float(maxY) - minY) / sqrt(((dX - uX) * (dX - uX)) + ((maxY - minY) * (maxY - minY))); // скалярное произведение векторов
+    //cangle = sqrt(((float(dX)-uX)*(dX-uX))+((maxY-minY)*(maxY-minY)));
+    int    angle_degrees=acos(cangle)* 57.2956;
+    if(uX<dX){
+     angle_degrees*=-1;
+ 
+    }
+    tv.print(5, 5, angle_degrees );
+    Serial3.println( angle_degrees);
+    pserial.println( angle_degrees);
+  }
+    tv.draw_line(0, 0, 0, 95, 1);       // drowing a rectangle
+    tv.draw_line(0, 95, 127, 95, 1);
+    tv.draw_line(127, 95, 127, 0, 1);
+    tv.draw_line(127, 0, 0, 0, 1);
+
+    tv.resume();
+    tv.delay_frame(5);
+  }

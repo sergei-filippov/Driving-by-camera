@@ -1,0 +1,119 @@
+#include <TVout.h>
+#include <fontALL.h>
+#define W 128
+#define H 96
+int x1;
+TVout tv;
+unsigned char x,y;
+unsigned char c;
+//unsigned char minX,minY,maxX,maxY;
+int minX, maxX;
+char s[32];
+char X[96];
+
+void setup()  {
+  tv.begin(PAL, W, H);
+  initOverlay();
+  initInputProcessing();
+
+  tv.select_font(font4x6);
+  tv.fill(0);
+  Serial.begin (115200);
+}
+
+
+void initOverlay() {
+  TCCR1A = 0;
+  // Enable timer1.  ICES0 is set to 0 for falling edge detection on input capture pin.
+  TCCR1B = _BV(CS10);
+
+  // Enable input capture interrupt
+  TIMSK1 |= _BV(ICIE1);
+
+  // Enable external interrupt INT0 on pin 2 with falling edge.
+  EIMSK = _BV(INT0);
+  EICRA = _BV(ISC01);
+}
+
+void initInputProcessing() {
+  // Analog Comparator setup
+  ADCSRA &= ~_BV(ADEN); // disable ADC
+  ADCSRB |= _BV(ACME); // enable ADC multiplexer
+  ADMUX &= ~_BV(MUX0);  // select A2 for use as AIN1 (negative voltage of comparator)
+  ADMUX |= _BV(MUX1);
+  ADMUX &= ~_BV(MUX2);
+  ACSR &= ~_BV(ACIE);  // disable analog comparator interrupts
+  ACSR &= ~_BV(ACIC);  // disable analog comparator input capture
+}
+
+// Required
+ISR(INT0_vect) {
+  display.scanLine = 0;
+}
+
+
+void loop() {
+  tv.capture();
+
+  // uncomment if tracking dark objects
+  tv.fill(INVERT);
+
+  // compute bounding box
+  
+ // minY = H;
+ 
+ // maxY = 0;
+  boolean found = false;
+  for(int y=0;y<H;y++) { 
+      minX=W-20;
+      maxX=20;
+      found = false;
+    for(int x=20;x<W-20;x++) { //for(int x=0;x<W;x++)
+      c = tv.get_pixel(x,y);
+      if (c == 1) {
+        found = true;
+        if (x < minX) {
+          minX = x;
+        }
+        if (x > maxX) {
+          maxX = x;
+        }
+        /*if (y < minY) {
+          minY = y;
+        }
+        if (y > maxY) {
+          maxY = y;
+        }*/
+      }
+    }
+    if (found == true)
+    x1= (maxX+minX)/2;
+    else 
+    x1= 0;  
+    X[y]=x1;
+  }
+
+  // draw bounding box
+  tv.fill(0);
+  /*if (found) {
+    tv.draw_line(minX, minY, maxX, minY, 0);
+    tv.draw_line(minX, minY, minX, maxY, 1);
+    tv.draw_line(maxX, minY, maxX, maxY, 1);
+    tv.draw_line(minX, maxY, maxX, maxY, 1);
+    sprintf(s, "%d, %d", ((maxX+minX)/2), ((maxY+minY)/2));
+    tv.print(0, 0, s);
+  }*/
+  
+  for (int i = 0; i< H; i++)
+  {
+    tv.set_pixel(W/2,i,1);
+    if (X[i]!= 0)
+    {
+      tv.set_pixel(X[i]-2,i,1);
+    }
+  }
+
+  tv.resume();
+  tv.delay_frame(2);
+}
+

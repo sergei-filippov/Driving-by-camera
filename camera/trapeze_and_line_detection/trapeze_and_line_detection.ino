@@ -149,7 +149,7 @@ void loop() {
 
 
   tv.draw_line(0, 0, 0, 94, 1);       // drowing a rectangle
-  tv.draw_line(0, 94, 127, 95, 1);
+  tv.draw_line(0, 94, 127, 94, 1);
   tv.draw_line(127, 94, 127, 0, 1);
   tv.draw_line(127, 0, 0, 0, 1);
 

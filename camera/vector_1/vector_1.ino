@@ -138,13 +138,14 @@ void loop() {
     cangle = (float(maxY) - minY) / sqrt(((dX - uX) * (dX - uX)) + ((maxY - minY) * (maxY - minY))); // скалярное произведение векторов
     //cangle = sqrt(((float(dX)-uX)*(dX-uX))+((maxY-minY)*(maxY-minY)));
     int    angle_degrees=acos(cangle)* 57.2956;
-    if(uX<dX){
+    if(uX>dX){
      angle_degrees*=-1;
  
     }
     tv.print(5, 5, angle_degrees );
-    Serial3.println( angle_degrees);
-    pserial.println( angle_degrees);
+    Serial3.write( angle_degrees );
+    
+    pserial.println( 1);
   }
     tv.draw_line(0, 0, 0, 95, 1);       // drowing a rectangle
     tv.draw_line(0, 95, 127, 95, 1);

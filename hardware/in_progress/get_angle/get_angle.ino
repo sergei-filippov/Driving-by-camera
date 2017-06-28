@@ -9,11 +9,19 @@ void setup() {
 }
 
 void loop() {
-  if(Serial1.available()){
-  int a = Serial1.read();
-  Serial.write(a);
- // Serial.println();
-servo.write(90+a);
-  }
+  if (Serial1.available()) {
+    int a = Serial1.read();
+    //Serial.write(Serial.read());
+    if (a >=128 ) {
+      a-=256;
+    }
+    Serial.println(a +90);
 
+
+    // delay(800);
+    // Serial.println();
+
+    servo.write(a + 90);
+    // Serial.println(a+70);
+  }
 }

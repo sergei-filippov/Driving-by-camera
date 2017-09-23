@@ -13,9 +13,9 @@ unsigned char c;
 unsigned char dX, uX, minY, minX, maxX, maxY;   //d-down u - up
 float cangle;
 char s[32];
-byte midX[2];
+byte midX[2]; 
 // --------------for 2-nd line detection//
-int line2_end;
+int liner_end;
 int num_line = 30;
 int now, next;
 int count_lines = 0;
@@ -77,7 +77,7 @@ void loop() {
   tv.fill(INVERT);
 
   
-  //------------for 2-nd line detection
+  //------------for right line detection
   count_lines=0;
   for (int i = 0; i < 127; i++) {
     now = tv.get_pixel(i, num_line);
@@ -89,7 +89,7 @@ void loop() {
         count_lines++;
         //---------------------лишняя линия
         if(count_lines==1){
-          line2_end=i;
+          liner_end=i;
         }
        //---------------------//
         bline_end = i;
@@ -98,6 +98,10 @@ void loop() {
 
       }
     }
+}
+// if there are no unnecessary lines
+if(count_lines==1){
+  liner_end=0;
 }
 
   //-------------------------------------//
@@ -109,7 +113,7 @@ void loop() {
   maxY = 0;
   boolean found = 0;
   y = 30;    // the tenth row
-  for (int x = line2_end+1; x < W; x++) {
+  for (int x = liner_end+1; x < W; x++) {
     c = tv.get_pixel(x, y);
     if (c == 1) {
       found = true;
@@ -127,7 +131,10 @@ void loop() {
       }
     }
   }
-  uX = int((minX + maxX) / 2);
+  if(maxX<126 && minX >2){ 
+   uX = int((minX + maxX) / 2);
+  }
+  
   minX = W;
   maxX = 0;
   y = H - 1;           //!!!!!
@@ -147,10 +154,12 @@ void loop() {
       if (y > maxY) {
         maxY = y;
       }
+      
     }
   }
-  dX = int((minX + maxX) / 2);
-
+  if(maxX<126 && minX >2){ 
+    dX = int((minX + maxX) / 2);
+  }
   // draw bounding box
   tv.fill(0);
   if (found) {
@@ -189,6 +198,6 @@ void loop() {
     tv.draw_line(127, 0, 0, 0, 1);
 
     tv.resume();
-    tv.delay_frame(5);
-    pserial.println(line2_end);
+    tv.delay_frame(5 );
+    pserial.println(count_lines);
   }

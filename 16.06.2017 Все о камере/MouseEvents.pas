@@ -1,28 +1,31 @@
 ﻿// Иллюстрация обработки событий мыши
-uses GraphABC;
-var xn,yn:integer;
-procedure MouseDown(x,y,mb: integer);
-begin
+uses
+  GraphABC;
 
-  MoveTo(x,y);
-  setpixel(x,y,clred);
-   
+var
+  xn, yn, count, i, xx: integer;
+  wredblock: integer := 10;
+  hredblock: integer := 10;
+
+procedure MouseDown(x, y, mb: integer);
+begin
+  MoveTo(x, y);
+  xx := x;
+  for i: integer := 0 to hredblock do 
+  begin
+    for j: integer := 0 to wredblock do
+    begin
+      setpixel(xx, y, clred);
+      xx := xx + 1;
+    end;
+    y := y + 1;
+    xx := x;
+  end;
+  println(x, y);
 end;
 
-procedure MouseMove(x,y,mb: integer);
-begin
-  if mb=1 then LineTo(x,y);
-  xn :=x;
-yn :=y;
- println(xn,yn);
-end;
 
 begin
-setconsoleio;
-  // Привязка обработчиков к событиям
-  //writeln(OnMouseDown);
+  setconsoleio;
   OnMouseDown := MouseDown;
-  println(xn,yn);
-  OnMouseMove := MouseMove;
 end.
-

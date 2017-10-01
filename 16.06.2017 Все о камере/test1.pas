@@ -1,19 +1,46 @@
-uses GraphABC;
+uses
+  GraphABC;
+
 var
   angl: real := -25;
   v: integer := 1;
-  w, h, wp, hp, wlast, hlast: integer;
+  w, h, wp, hp, wlast, hlast,xn, yn, i, xx: integer;
   distance: integer := 50;
   x0: integer := 0;
   y0: integer := 0;
   count: integer := 0;
   px := 128;
   py := 96;
-
+  wredblock: integer := 10;
+  hredblock: integer := 10;
+  
+//------------------------------------------//  
+procedure MouseDown(x, y, mb: integer);
+begin
+  MoveTo(x, y);
+  xx := x;
+  for i: integer := 0 to hredblock do 
+  begin
+    for j: integer := 0 to wredblock do
+    begin
+      setpixel(xx, y, clred);
+      xx := xx + 1;
+    end;
+    y := y + 1;
+    xx := x;
+  end;
+  println(x, y);
+end;
+//------------------------------------------//
 
 begin
   while(true) do
   begin
+  //------------------------//
+  setconsoleio;
+  OnMouseDown := MouseDown;
+  //------------------------//
+  
     w := Window.Width;
     h := Window.Height;
     while((h <> hlast) or (w <> wlast)) do

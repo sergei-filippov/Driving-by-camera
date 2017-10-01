@@ -4,7 +4,7 @@ uses
 var
   angl: real := -25;
   v: integer := 1;
-  w, h, wp, hp, wlast, hlast,xn, yn, i, xx: integer;
+  w, h, wp, hp, wlast, hlast, xn, yn, i, xx: integer;
   distance: integer := 50;
   x0: integer := 0;
   y0: integer := 0;
@@ -14,11 +14,21 @@ var
   wredblock: integer := 10;
   hredblock: integer := 10;
   
+  
+//----------------------//
+procedure MouseMove(x, y, mb: integer);
+begin
+   drawRectangle(x,y,x+10,y+10);
+   redraw;
+end;
+//-----------------------//
+
+
 //------------------------------------------//  
 procedure MouseDown(x, y, mb: integer);
 begin
   MoveTo(x, y);
-  xx := x;
+ { xx := x;
   for i: integer := 0 to hredblock do 
   begin
     for j: integer := 0 to wredblock do
@@ -29,18 +39,20 @@ begin
     y := y + 1;
     xx := x;
   end;
-  println(x, y);
+  println(x, y);}
+  redraw;
 end;
 //------------------------------------------//
 
 begin
   while(true) do
   begin
-  //------------------------//
-  setconsoleio;
-  OnMouseDown := MouseDown;
-  //------------------------//
-  
+    //------------------------//
+    setconsoleio;
+    OnMouseDown := MouseDown;
+    OnMouseMove := MouseMove;
+    //------------------------//
+    
     w := Window.Width;
     h := Window.Height;
     while((h <> hlast) or (w <> wlast)) do

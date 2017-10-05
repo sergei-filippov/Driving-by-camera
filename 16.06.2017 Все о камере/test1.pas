@@ -4,7 +4,7 @@ uses
 var
   angl: real := -25;
   v: integer := 1;
-  w, h, wp, hp, wlast, hlast, xn, yn, i, xx: integer;
+  w, h, wp, hp, wlast, hlast, xn, yn, i, xx, xfirstinbox, yfirstinbox, xnbox, ynbox: integer;
   distance: integer := 50;
   x0: integer := 0;
   y0: integer := 0;
@@ -13,13 +13,29 @@ var
   py := 96;
   wredblock: integer := 10;
   hredblock: integer := 10;
-  
-  
+
+
 //----------------------//
 procedure MouseMove(x, y, mb: integer);
 begin
-   drawRectangle(x,y,x+10,y+10);
-   redraw;
+  if mb = 1 then 
+  begin
+    xnbox := x div wp;
+    ynbox := y div hp;
+    xfirstinbox := xnbox * wp;
+    yfirstinbox := ynbox * hp;
+    for j: integer := yfirstinbox + 1 to yfirstinbox + hp - 1 do 
+    begin
+      for i: integer := xfirstinbox + 1 to xfirstinbox + wp - 1 do
+      begin
+        setpixel(i, j, clred);
+      end;
+    end;
+  end;
+  redraw;
+  
+  
+  
 end;
 //-----------------------//
 
@@ -28,18 +44,17 @@ end;
 procedure MouseDown(x, y, mb: integer);
 begin
   MoveTo(x, y);
- { xx := x;
-  for i: integer := 0 to hredblock do 
+  xnbox := x div wp;
+  ynbox := y div hp;
+  xfirstinbox := xnbox * wp;
+  yfirstinbox := ynbox * hp;
+  for j: integer := yfirstinbox + 1 to yfirstinbox + hp - 1 do 
   begin
-    for j: integer := 0 to wredblock do
+    for i: integer := xfirstinbox + 1 to xfirstinbox + wp - 1 do
     begin
-      setpixel(xx, y, clred);
-      xx := xx + 1;
+      setpixel(i, j, clred);
     end;
-    y := y + 1;
-    xx := x;
   end;
-  println(x, y);}
   redraw;
 end;
 //------------------------------------------//

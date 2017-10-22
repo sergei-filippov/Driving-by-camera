@@ -2,40 +2,39 @@ uses
   GraphABC;
 
 var
-  angl: real := -25;
-  v: integer := 1;
-  w, h, wp, hp, wlast, hlast, xn, yn, i, xx, xfirstinbox, yfirstinbox, xnbox, ynbox: integer;
-  distance: integer := 50;
-  x0: integer := 0;
-  y0: integer := 0;
+  w, h, wbox, hbox, wlast, hlast,  xfirstinbox, yfirstinbox, xnbox, ynbox: integer;
+  
   count: integer := 0;
-  px := 128;
-  py := 96;
-  wredblock: integer := 10;
-  hredblock: integer := 10;
+  
+  spacel{left} : integer := 0;
+  spacer{right}: integer := 20;
+  spaced{down}: integer := 0;
+  spacet{top}: integer := 0;
+  x0: integer := spacer;
+  y0: integer := spacet;
+  xbox := 128;
+  ybox := 96;
+
 
 
 //----------------------//
 procedure MouseMove(x, y, mb: integer);
 begin
-  if mb = 1 then 
+  xnbox := x div wbox;
+  ynbox := y div hbox;
+  xfirstinbox := xnbox * wbox;
+  yfirstinbox := ynbox * hbox;
+  for j: integer := yfirstinbox + 1 to yfirstinbox + hbox - 1 do 
   begin
-    xnbox := x div wp;
-    ynbox := y div hp;
-    xfirstinbox := xnbox * wp;
-    yfirstinbox := ynbox * hp;
-    for j: integer := yfirstinbox + 1 to yfirstinbox + hp - 1 do 
+    for i: integer := xfirstinbox + 1 to xfirstinbox + wbox - 1 do
     begin
-      for i: integer := xfirstinbox + 1 to xfirstinbox + wp - 1 do
-      begin
-        setpixel(i, j, clred);
-      end;
+      if mb = 1 then
+        setpixel(i, j, clred)
+      else if mb = 2 then
+        setpixel(i, j, clwhite);
     end;
   end;
   redraw;
-  
-  
-  
 end;
 //-----------------------//
 
@@ -43,16 +42,20 @@ end;
 //------------------------------------------//  
 procedure MouseDown(x, y, mb: integer);
 begin
+x:=x+1;
   MoveTo(x, y);
-  xnbox := x div wp;
-  ynbox := y div hp;
-  xfirstinbox := xnbox * wp;
-  yfirstinbox := ynbox * hp;
-  for j: integer := yfirstinbox + 1 to yfirstinbox + hp - 1 do 
+  xnbox := x div wbox;
+  ynbox := y div hbox;
+  xfirstinbox := xnbox * wbox;
+  yfirstinbox := ynbox * hbox;
+  for j: integer := yfirstinbox + 1 to yfirstinbox + hbox - 1 do 
   begin
-    for i: integer := xfirstinbox + 1 to xfirstinbox + wp - 1 do
+    for i: integer := xfirstinbox + 1 to xfirstinbox + wbox - 1 do
     begin
-      setpixel(i, j, clred);
+      if mb = 1 then
+        setpixel(i, j, clred)
+      else if mb = 2 then
+        setpixel(i, j, clwhite);
     end;
   end;
   redraw;
@@ -70,6 +73,8 @@ begin
     
     w := Window.Width;
     h := Window.Height;
+    w:= w-spacer;
+    h:=h;
     while((h <> hlast) or (w <> wlast)) do
     begin
       
@@ -79,38 +84,35 @@ begin
       lockdrawing;
       
       
-      wp := w div px;
-      hp := h div py;
+      wbox := w div xbox;
+      hbox := h div ybox;
       
       //draw vertical   
-      while count < px + 1 do
+      while count < xbox + 1 do
       begin
-        line(x0, y0, x0, y0 + py * hp);
-        x0 := x0 + wp;
+        line(x0, y0, x0, y0 + ybox * hbox);
+        x0 := x0 + wbox;
         count := count + 1;
         redraw;
       end;
-      //--------------//   
-      x0 := 0;
-      y0 := 0;
+      x0 := spacer;
       count := 0;
-      //----------------//   
+        //--------------//   
+      
+      
       //draw horizontal   
-      while count < py + 1 do
+      while count < ybox + 1 do
       begin
-        line(x0, y0, x0 + px * wp, y0);
-        y0 := y0 + hp;
+        line(x0, y0, x0 + xbox * wbox, y0);
+        y0 := y0 + hbox;
         count := count + 1;
         redraw;
       end;
       sleep(1000);
-      
-      
-      x0 := 0;
-      y0 := 0;
+      y0 := spacet;
       count := 0;
-      // line(0,0,px*wp,0);
-      //line(5,0,5,py*hp);
+      // line(0,0,xbox*wp,0);
+      //line(5,0,5,ybox*hp);
       //redraw;
     end;
   end;

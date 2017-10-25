@@ -7,7 +7,7 @@ var
   count: integer := 0;
   
   spacel{left} : integer := 0;
-  spacer{right}: integer := 20;
+  spacer{right}: integer := 0;
   spaced{down}: integer := 0;
   spacet{top}: integer := 0;
   x0: integer := spacer;
@@ -42,7 +42,6 @@ end;
 //------------------------------------------//  
 procedure MouseDown(x, y, mb: integer);
 begin
-x:=x+1;
   MoveTo(x, y);
   xnbox := x div wbox;
   ynbox := y div hbox;
@@ -73,8 +72,11 @@ begin
     
     w := Window.Width;
     h := Window.Height;
-    w:= w-spacer;
-    h:=h;
+    w:=w-spacer;
+    h:=h-spacet;
+    
+   
+   
     while((h <> hlast) or (w <> wlast)) do
     begin
       
@@ -86,6 +88,8 @@ begin
       
       wbox := w div xbox;
       hbox := h div ybox;
+      spacer := 2*wbox;
+      spacet := 3*hbox;
       
       //draw vertical   
       while count < xbox + 1 do
@@ -96,6 +100,7 @@ begin
         redraw;
       end;
       x0 := spacer;
+      y0:=spacet;
       count := 0;
         //--------------//   
       

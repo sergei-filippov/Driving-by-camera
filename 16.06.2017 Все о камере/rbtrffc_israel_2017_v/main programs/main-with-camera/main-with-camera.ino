@@ -1,7 +1,7 @@
 #include <Servo.h>
 
 Servo servo;
-<<<<<<< HEAD
+
 
 //------------------------------//irda codes
 //--------------------------------------------------// i'm really not sure in the this defining
@@ -15,10 +15,10 @@ Servo servo;
 //------------------------------//
 
 int angle, speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed;
-=======
+
 bool stopline;
-int angle, speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing;
->>>>>>> origin/sergei
+
+
 const int inaPin = 26;
 const int inbPin = 27;
 const int pwm = 3;
@@ -34,30 +34,30 @@ void setup() {
   //----------------//
   servo.attach(20);    //serva 55-125
   delay(1000);
-  pinMode(inaPin, OUTPUT);   //50
+  pinMode(inaPin, OUTPUT);   //5
   pinMode(inbPin, OUTPUT);   //4
   pinMode(pwm, OUTPUT);   //3
   pinMode(diagaPin, INPUT);  //7
   pinMode(diagbPin, INPUT);  //8
 
-<<<<<<< HEAD
-  //pinMode(40, INPUT);     //stop-line existence
-=======
 
->>>>>>> origin/sergei
+  //pinMode(40, INPUT);     //stop-line existence
+
+
+
   digitalWrite(inaPin, LOW); // for motors
   digitalWrite(inbPin, HIGH);
 
   Serial.begin(115200);
   Serial1.begin(115200); //seeeduino angle
   Serial2.begin(115200); //irda
-<<<<<<< HEAD
+
   Serial3.begin(115200); //seeeduino stop line
   speed1 = 40;
-=======
+
   Serial3.begin(115200); //stopline
   speed1 = 70;
->>>>>>> origin/sergei
+
   distanceEdge = 20;
   slowSpeed = 50;
 }
@@ -123,7 +123,7 @@ void loop() {
 
   //----------------------------------//
   //------------------------------------------------------------//irda things
-<<<<<<< HEAD
+
   /*  irda = Serial2.read();
      if (irda == 0 || irda == 1 || irda == 4) { //if red,red+yellow,yellow
       speed1 = speedBeforCrossing;
@@ -158,7 +158,7 @@ void loop() {
       }
     }
   }*/
-=======
+
   irda = Serial2.read();
   if (irda == 0 || irda == 1 || irda == 4) { //if red,red+yellow,yellow
     speed1 = speedBeforCrossing;
@@ -176,12 +176,12 @@ void loop() {
     }
   }
 
->>>>>>> origin/sergei
+
   //-----------------------------------------------//
   //-----------------------------------------------------------//read from camera
   if (Serial1.available()) {
     // incomingByte = Serial1.read();
-<<<<<<< HEAD
+
     angle = Serial1.read();
 
     //    Serial.print(" ");
@@ -191,16 +191,16 @@ void loop() {
         }*/
     angle -= 60;
     if ((angle < 12) && (angle > -12))
-=======
+
     angle = Serial1.read() + 90;
     //     Serial.print(angle);
     //   Serial.print(" ");
     if (angle > 156)
->>>>>>> origin/sergei
+
     {
       servo.write((angle * 1.2) + 90);
     }
-<<<<<<< HEAD
+
     else
       servo.write((angle * 2.8) + 90);
     // angle = (angle * 1.7) + 90;
@@ -208,17 +208,17 @@ void loop() {
     //  Serial.println(angle);
     //  delay(10);
     //servo.write((angle * 1.5) + 90);
-=======
+
     //    Serial.println(angle);
->>>>>>> origin/sergei
+
     //  delay(10);
     //  Serial.print(angle);
     //Serial.print(incomingByte);
-<<<<<<< HEAD
+
     //  Serial.print(" \n");
-=======
+
     //    Serial.print(" \n");
->>>>>>> origin/sergei
+
   }
   //----------------------------------------------------------//
   /*if (Serial1.available() > 0) {

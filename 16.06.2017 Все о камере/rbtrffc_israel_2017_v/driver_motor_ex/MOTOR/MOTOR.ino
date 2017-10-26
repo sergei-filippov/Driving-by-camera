@@ -62,6 +62,7 @@ const int trimPin = A0;
 int i = 0;
 
 void setup() {
+ // Serial.begin(9600);
   pinMode(buttonPin, INPUT);     //pins on motor driver ↓↓
   pinMode(inaPin, OUTPUT);   //5
   pinMode(inbPin, OUTPUT);   //4
@@ -75,7 +76,7 @@ void setup() {
 void loop() {
   
   // CW
-  digitalWrite(inaPin, HIGH);
+ /* digitalWrite(inaPin, HIGH);
   digitalWrite(inbPin, LOW);
   while(digitalRead(buttonPin) == HIGH){
     i = analogRead(trimPin);
@@ -107,6 +108,16 @@ void loop() {
   digitalWrite(inbPin, HIGH);
   while(digitalRead(buttonPin) == HIGH);
   while(digitalRead(buttonPin) == LOW);
-  delay(500);
+  delay(500);*/
+   digitalWrite(inaPin, HIGH);
+  digitalWrite(inbPin, LOW);
+   for(int i = 0;i<255;i+=2){
+analogWrite(pwmPin, i);
+
+/*Serial.print(analogRead(diagaPin));
+ Serial.print(" ");
+ Serial.println(analogRead(diagbPin));*/
+ delay(100);
+}
   
 }

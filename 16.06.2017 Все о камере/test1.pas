@@ -5,7 +5,8 @@ var
   w, h, wbox, hbox, wlast, hlast,  xfirstinbox, yfirstinbox, xnbox, ynbox: integer;
   
   count: integer := 0;
-  
+  spacelbox: integer := 2;
+  spacetbox: integer := 2;
   spacel{left} : integer := 0;
   spacer{right}: integer := 0;
   spaced{down}: integer := 0;
@@ -72,11 +73,11 @@ begin
     
     w := Window.Width;
     h := Window.Height;
-    w:=w-spacer;
-    h:=h-spacet;
+    w := w - spacel;
+    h := h - spacet;
     
-   
-   
+    
+    
     while((h <> hlast) or (w <> wlast)) do
     begin
       
@@ -88,8 +89,8 @@ begin
       
       wbox := w div xbox;
       hbox := h div ybox;
-      spacer := 2*wbox;
-      spacet := 3*hbox;
+      spacel := spacelbox * wbox;
+      spacet := spacetbox * hbox;
       
       //draw vertical   
       while count < xbox + 1 do
@@ -99,8 +100,7 @@ begin
         count := count + 1;
         redraw;
       end;
-      x0 := spacer;
-      y0:=spacet;
+      x0 := spacel;
       count := 0;
         //--------------//   
       

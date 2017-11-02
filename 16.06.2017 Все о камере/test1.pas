@@ -6,7 +6,7 @@ var
   
   count: integer := 0;
   spacelbox: integer := 2;
-  spacetbox: integer := 2;
+  spacetbox: integer := 20;
   spacel{left} : integer := 0;
   spacer{right}: integer := 0;
   spaced{down}: integer := 0;
@@ -91,6 +91,13 @@ begin
       hbox := h div ybox;
       spacel := spacelbox * wbox;
       spacet := spacetbox * hbox;
+      
+      //draw button
+      
+      
+     FillRect(wbox*20,hbox*4,(wbox*20)+40,(hbox*20)+20);
+      
+      
       
       //draw vertical   
       while count < xbox + 1 do

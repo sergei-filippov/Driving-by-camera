@@ -48,11 +48,11 @@ void setup() {
   digitalWrite(inaPin, LOW); // for motors
   digitalWrite(inbPin, HIGH);
 
-  Serial.begin(115200);
-  Serial1.begin(115200); //seeeduino angle
+  Serial.begin(9600);
+  Serial1.begin(9600); //seeeduino angle
   Serial2.begin(115200); //irda
 
-  Serial3.begin(115200); //seeeduino stop line
+  Serial3.begin(9600); //seeeduino stop line
   speed1 = 40;
 
   Serial3.begin(115200); //stopline
@@ -185,31 +185,34 @@ void loop() {
     angle = Serial1.read();
 
     //    Serial.print(" ");
-    /*if (angle > 256)
+    if (angle > 128)
         {
           angle -= 256;
-        }*/
-    angle -= 60;
-    if ((angle < 12) && (angle > -12))
-
-    angle = Serial1.read() + 90;
+        }
+        
+    //angle *= -1;
+   // if ((angle < 12) && (angle > -12))
+ 
+    angle = angle + 90;
+    Serial.println(angle);
     //     Serial.print(angle);
     //   Serial.print(" ");
-    if (angle > 156)
+   /* if (angle > 156)
 
     {
       servo.write((angle * 1.2) + 90);
-    }
+    }*/
 
-    else
-      servo.write((angle * 2.8) + 90);
+/*else
+      servo.write((angle * 2.8) + 90);*/
+      servo.write(angle);
     // angle = (angle * 1.7) + 90;
-    //Serial.println((angle * 1.5) + 90);
+  //  Serial.println((angle * 2.8) + 90);
     //  Serial.println(angle);
     //  delay(10);
     //servo.write((angle * 1.5) + 90);
 
-    //    Serial.println(angle);
+       
 
     //  delay(10);
     //  Serial.print(angle);

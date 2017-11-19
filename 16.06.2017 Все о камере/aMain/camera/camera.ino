@@ -135,7 +135,7 @@ if(count_lines==1){
    uX = int((minX + maxX) / 2);
   }
   
-  minX = W;
+/*  minX = W;
   maxX = 0;
   y = H - 1;           //!!!!!
   for (int x = 0; x < W; x++) {
@@ -160,6 +160,9 @@ if(count_lines==1){
   if(maxX<126 && minX >2){ 
     dX = int((minX + maxX) / 2);
   }
+  */
+  maxY = 95;
+  dX = int(W/2);
   // draw bounding box
   tv.fill(0);
   if (found) {
@@ -167,7 +170,7 @@ if(count_lines==1){
     tv.draw_line( int(W / 2), 0, int(W / 2), 95, 1); // screen vertical line
 
 
-    tv.draw_line(dX - 3, maxY, uX - 3, minY, 1); // middle line of any object
+    tv.draw_line(int(W/2),maxY, uX - 3, minY, 1); // middle line of any object
     
 
     // tv.draw_line((maxX+minX)/2-3,maxY,(maxX+minX)/2-3,minY,1);     //vertical line

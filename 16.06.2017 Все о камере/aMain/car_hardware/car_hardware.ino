@@ -57,7 +57,7 @@ void setup() {
 
 
   speed1 = 70;         // usual speed
-  distanceEdge = 20;   // max distance without barrier
+  distanceEdge = 50;   // max distance without barrier
   slowSpeed = 50;      // speed when...
 }
 
@@ -66,14 +66,14 @@ void loop() {
   analogWrite(pwm, speed1);  //start the engine
 
 
-  //------------------------------------------------------------------------// check signals
+/*  //------------------------------------------------------------------------// check signals
   if (Serial2.available()) {
     irda = Serial2.read();
     if (irda == 0 || irda == 1 || irda == 4) {  //if red,red+yellow,yellow
       analogWrite(pwm, 0);
     }
   }
-
+*/
 
  /*   
       //----------------------------------//pedestrian crossing
@@ -100,14 +100,15 @@ void loop() {
   //---------------------------------------------------------------------//distance attributive
   d1 = 5222 / (analogRead(A6) - 13);    //changes values into cm
   d2 = 5222 / (analogRead(A7) - 13);
-  d3 = 5222 / (analogRead(A8) - 13);
-  
+//  d3 = 5222 / (analogRead(A8) - 13);
+  d3=1000;//!!
   if ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {     // if there're barriers
     while ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
       
       d1 = 5222 / (analogRead(A6) - 13);
       d2 = 5222 / (analogRead(A7) - 13);
-      d3 = 5222 / (analogRead(A8) - 13);
+    //  d3 = 5222 / (analogRead(A8) - 13);
+    d3=1000;//!!
       analogWrite(pwm, 0);
       /*Serial.println(d1);
         Serial.print(" ");
@@ -150,7 +151,7 @@ void loop() {
 */
   //------------------------------------------------------------//
   //-----------------------------//stopline
-  if (Serial3.available()) {
+ /* if (Serial3.available()) {
     stopline = Serial3.read();
     Serial.println(stopline);
     if (stopline) {
@@ -158,7 +159,7 @@ void loop() {
       Serial.print("STOP");
     }
   }
-
+*/
   //-----------------------------------------------------------//read from camera
   if (Serial1.available()) {
     // incomingByte = Serial1.read();
@@ -171,7 +172,7 @@ void loop() {
       angle -= 256;
     }
 
-    anngle*=2;     // mechanic coefficient
+    angle*=2;     // mechanic coefficient
 
     angle = angle + 90;
     Serial.println(angle);

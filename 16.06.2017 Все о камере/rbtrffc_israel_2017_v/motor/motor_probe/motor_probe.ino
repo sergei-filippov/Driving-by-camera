@@ -6,7 +6,7 @@ void setup() {
 pinMode(15,OUTPUT);
   servom.attach(15);
   delay(2000);
-  Serial.begin(9600);
+ // Serial.begin(9600);
   }
 void loop() {
 
@@ -28,6 +28,10 @@ void loop() {
      Serial.println(i);
   }*/
     
- servom.write(2000);
+ servom.write(88);
+ delay(1000);
+ servom.write(90);
+ delay(1000);
+ 
 
 }

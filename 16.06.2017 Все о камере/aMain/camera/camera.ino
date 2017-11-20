@@ -1,19 +1,21 @@
 #include <pollserial.h>
 
 #include <TVout.h>
-#include <fontALL.h>
-#define W 128
-#define H 96
+#include <fontALL.h>  //fonts
+#define W 128       // width of the window
+#define H 96         // height of the window
 
 TVout tv;
-pollserial pserial;
+pollserial pserial;  //instead of Serial
 
+bool debug = 1;
 unsigned char x, y;
 unsigned char c;
 unsigned char dX, uX, minY, minX, maxX, maxY;   //d-down u - up
-float cangle;
+int angle;
+float cosangle;  // cos of the angle in rad
 char s[32];
-byte midX[2]; 
+byte midX[2];
 // --------------for 2-nd line detection//
 int liner_end;
 int num_line = 30;
@@ -27,13 +29,16 @@ int bline_end = 0;
 
 
 void setup()  {
-  
-  Serial3.begin(9600);
-  pserial.begin(9600);
+
+  if (debug) {
+    pserial.begin(9600);
+  }
+
+  Serial3.begin(9600);  //angle to mega
+
   tv.begin(PAL, W, H);
   initOverlay();
   initInputProcessing();
-
   tv.select_font(font4x6);
   tv.fill(0);
 }
@@ -71,14 +76,14 @@ ISR(INT0_vect) {
 
 void loop() {
   tv.capture();
-  
+
 
   // uncomment if tracking dark objects
   tv.fill(INVERT);
 
-  
+
   //------------for right line detection
-  count_lines=0;
+  count_lines = 0;
   for (int i = 0; i < 127; i++) {
     now = tv.get_pixel(i, num_line);
     next = tv.get_pixel(i + 1, num_line);
@@ -88,21 +93,19 @@ void loop() {
       } else {
         count_lines++;
         //---------------------лишняя линия
-        if(count_lines==1){
-          liner_end=i;
+        if (count_lines == 1) {
+          liner_end = i;
         }
-       //---------------------//
+        //---------------------//
         bline_end = i;
-        widths[count_lines] =(bline_end - bline_start)+1;
-        
-
+        widths[count_lines] = (bline_end - bline_start) + 1;
       }
     }
-}
-// if there are no unnecessary lines
-if(count_lines==1){
-  liner_end=0;
-}
+  }
+  // if there are no unnecessary lines
+  if (count_lines == 1) {
+    liner_end = 0;
+  }
 
   //-------------------------------------//
 
@@ -113,7 +116,7 @@ if(count_lines==1){
   maxY = 0;
   boolean found = 0;
   y = 30;    // the tenth row
-  for (int x = liner_end+1; x < W; x++) {
+  for (int x = liner_end + 1; x < W; x++) {
     c = tv.get_pixel(x, y);
     if (c == 1) {
       found = true;
@@ -131,47 +134,49 @@ if(count_lines==1){
       }
     }
   }
-  if(maxX<126 && minX >2){ 
-   uX = int((minX + maxX) / 2);
+  if (maxX < 126 && minX > 2) {
+    uX = int((minX + maxX) / 2);
   }
-  
-/*  minX = W;
-  maxX = 0;
-  y = H - 1;           //!!!!!
-  for (int x = 0; x < W; x++) {
-    c = tv.get_pixel(x, y);
-    if (c == 1) {
-      found = true;
-      if (x < minX) {
-        minX = x;
+
+  /*  minX = W;
+    maxX = 0;
+    y = H - 1;           //!!!!!
+    for (int x = 0; x < W; x++) {
+      c = tv.get_pixel(x, y);
+      if (c == 1) {
+        found = true;
+        if (x < minX) {
+          minX = x;
+        }
+        if (x > maxX) {
+          maxX = x;
+        }
+        if (y < minY) {
+          minY = y;
+        }
+        if (y > maxY) {
+          maxY = y;
+        }
+
       }
-      if (x > maxX) {
-        maxX = x;
-      }
-      if (y < minY) {
-        minY = y;
-      }
-      if (y > maxY) {
-        maxY = y;
-      }
-      
     }
-  }
-  if(maxX<126 && minX >2){ 
-    dX = int((minX + maxX) / 2);
-  }
+    if(maxX<126 && minX >2){
+      dX = int((minX + maxX) / 2);
+    }
   */
-  maxY = 95;
-  dX = int(W/2);
+  maxY = 96;
+  dX = int(W / 2);
   // draw bounding box
   tv.fill(0);
   if (found) {
     //tv.draw_line((maxX+minX)/2-3,maxY,(maxX+minX)/2-3,minY,1);   // vertical line
-    tv.draw_line( int(W / 2), 0, int(W / 2), 95, 1); // screen vertical line
+
+    if (debug) {
+      tv.draw_line(int(W / 2), 0, int(W / 2), H, 1); // screen vertical line
 
 
-    tv.draw_line(int(W/2),maxY, uX - 3, minY, 1); // middle line of any object
-    
+      tv.draw_line(int(W / 2), H, uX, minY, 1); // line between points
+    }
 
     // tv.draw_line((maxX+minX)/2-3,maxY,(maxX+minX)/2-3,minY,1);     //vertical line
 
@@ -183,24 +188,28 @@ if(count_lines==1){
     // sprintf(s, "%d, %d", ((maxX + minX) / 2), ((maxY + minY) / 2));
     //tv.print(0, 0, s);
 
-    cangle = (float(maxY) - minY) / sqrt(((dX - uX) * (dX - uX)) + ((maxY - minY) * (maxY - minY))); // скалярное произведение векторов
-    //cangle = sqrt(((float(dX)-uX)*(dX-uX))+((maxY-minY)*(maxY-minY)));
-    int    angle_degrees=acos(cangle)* 57.2956;
-    if(uX>dX){
-     angle_degrees*=-1;
- 
-    }
-    tv.print(5, 5, angle_degrees );
-    Serial3.write( angle_degrees );
-    
-   // pserial.println( 1);
-  }
-    tv.draw_line(0, 0, 0, 95, 1);       // drowing a rectangle
-    tv.draw_line(0, 95, 127, 95, 1);
-    tv.draw_line(127, 95, 127, 0, 1);
-    tv.draw_line(127, 0, 0, 0, 1);
+    cosangle = (float(H) - minY) / sqrt(((dX - uX) * (dX - uX)) + ((H - minY) * (H - minY))); // скалярное произведение векторов
+    //cosangle = sqrt(((float(dX)-uX)*(dX-uX))+((maxY-minY)*(maxY-minY)));
 
-    tv.resume();
-    tv.delay_frame(5 );
-    pserial.println(count_lines);
+    angle = acos(cosangle) * 57.2956;
+
+    if (uX > dX) {
+      angle *= -1;
+
+    }
+    Serial3.write(angle);  // angle to mega
+
+    if (debug) {
+      tv.print(5, 5, angle );
+      pserial.println(count_lines);
+      tv.draw_line(0, 0, 0, 95, 1);       // drowing a rectangle
+      tv.draw_line(0, 95, 127, 95, 1);
+      tv.draw_line(127, 95, 127, 0, 1);
+      tv.draw_line(127, 0, 0, 0, 1);
+    }
+
   }
+  tv.resume();
+  tv.delay_frame(5);
+
+}

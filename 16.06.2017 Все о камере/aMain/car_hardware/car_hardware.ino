@@ -171,11 +171,11 @@ void loop() {
     {
       angle -= 256;
     }
-
+  Serial.println(angle);
     angle*=2;     // mechanic coefficient
 
     angle = angle + 90;
-    Serial.println(angle);
+  //
     //     Serial.print(angle);
     //   Serial.print(" ");
    

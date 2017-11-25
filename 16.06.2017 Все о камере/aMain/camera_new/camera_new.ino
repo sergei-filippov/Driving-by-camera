@@ -131,7 +131,7 @@ void loop() {
   }
 
   midx60 = (lastx + firstx) / 2;          // middle of the line
-  width60 = (lastx - d) - (firstx + d)
+  width60 = (lastx - d) - (firstx + d);
             //------------------------------------------------------------//
             y = 30;
 
@@ -152,13 +152,13 @@ void loop() {
 
 
 
-  if (width30 > ? && width60 < H - 10 ) { // what is normal?
+ /* if (width30 > ? && width60 < H - 10 ) { // what is normal?
     isstopline = 1;
-  }
+  }*/
 
 
-  cosHto60 = float(36)) / sqrt(((midx - midx60) * (midx - midx60)) + (36 * 36)); // 36 is H(96) - 60
-  cosHto30 = float(66)) / sqrt(((midx - midx30) * (midx - midx30)) + (66 * 66)); // 66 is H(96) - 30
+  cosHto60 = float(36) / sqrt((midx - midx60) * (midx - midx60) + (36 * 36)); // 36 is H(96) - 60
+  cosHto30 = float(66) / sqrt((midx - midx30) * (midx - midx30) + (66 * 66)); // 66 is H(96) - 30
 
   angleHto60 = acos(cosHto60) * 57.2956;
   angleHto30 = acos(cosHto30) * 57.2956;

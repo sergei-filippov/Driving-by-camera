@@ -12,20 +12,20 @@ bool debug = 1;  // for debug
 bool c;  // value of the current pixel
 bool islinestarted = 0;
 bool isstopline;
-unsigned char midx = W / 2;
-unsigned char midx60, midx30;
-unsigned char d = 30;  // segment of calc  // d+line_width+d;
+int midx = W / 2;
+int midx60, midx30;
+int d = 30;  // segment of calc  // d+line_width+d;
 
-unsigned char firstx = midx - d;
-unsigned char lastx = midx + d;
+int firstx = midx - d;
+int lastx = midx + d;
 
 
-unsigned char z = 0; // counter for any usage
-unsigned char x, y;
-unsigned char numofobj = 0; // general number of lines or objects
-unsigned char xline[10]; // positions of all first and last xs // first is odd and last is even // here only 5 objects
+int z = 0; // counter for any usage
+int x, y;
+int numofobj = 0; // general number of lines or objects
+int xline[10]; // positions of all first and last xs // first is odd and last is even // here only 5 objects
 
-unsigned char widthH, width60, width30;
+int widthH, width60, width30;
 
 char angle, angleHto60, angleHto30;
 float cosHto60, cosHto30;
@@ -113,7 +113,7 @@ void loop() {
       break;
     }
   }
-
+   pserial.println(lastx);
   //----------------------------------------------------------//
   y = 60;
 
@@ -135,7 +135,7 @@ void loop() {
             //------------------------------------------------------------//
             y = 30;
 
-  for (x = firstx ; x < lastx; x++) {
+/*  for (x = firstx ; x < lastx; x++) {
     c = tv.get_pixel(x, y);
     if (c) {
       firstx = x;
@@ -149,7 +149,7 @@ void loop() {
   }
   midx30 = (lastx + firstx) / 2;          // middle of the line
   width30 = (lastx - d) - (firstx + d);
-
+*/
 
 
  /* if (width30 > ? && width60 < H - 10 ) { // what is normal?
@@ -168,16 +168,17 @@ void loop() {
 
 }
 Serial3.write(angle);  // angle to mega
-
+tv.fill(0);
 if (debug) {
-  tv.print(5, 5, angle);
-    tv.draw_line(0, 0, 0, H, 1);       // drowing a rectangle
-    tv.draw_line(0, H, W, H, 1);
-    tv.draw_line(W, H, W, 0, 1);
-    tv.draw_line(W, 0, 0, 0, 1);
+ // tv.print(5, 5, lastx);
+
+    tv.draw_line(0, 0, 0, H-1, 1);       // drawing a rectangle
+    tv.draw_line(0, H-1, W-1, H-1, 1);
+    tv.draw_line(W-1, H-1, W-1, 0, 1);
+    tv.draw_line(W-1, 0, 0, 0, 1);
 
     tv.draw_line(midx, H, midx60, 60, 1);
-    tv.draw_line(midx, H, midx30, 30, 1);
+   // tv.draw_line(midx, midx60, midx30, 30, 1);
   }
 
   tv.resume();

@@ -36,7 +36,7 @@ void setup()  {
     pserial.begin(9600);
   }
 
-  Serial3.begin(9600);  //angle to mega
+  //Serial3.begin(9600);  //angle to mega
 
   tv.begin(PAL, W, H);
   initOverlay();
@@ -101,7 +101,7 @@ void loop() {
   //----------------------------------------------------------//
   y = H;
 
-  for (x = firstx ; x < lastx; x++) {
+ /* for (x = firstx ; x < lastx; x++) {
     c = tv.get_pixel(x, y);
     if (c) {
       firstx = x - d;
@@ -113,29 +113,29 @@ void loop() {
       break;
     }
   }
-   pserial.println(lastx);
+   pserial.println(lastx);*/
   //----------------------------------------------------------//
   y = 60;
 
   for (x = firstx ; x < lastx; x++) {
     c = tv.get_pixel(x, y);
-    if (c) {
-      firstx = x;
+    if (c && !islinestarted) {
+      firstx = x-d;
       islinestarted = 1;
     }
     if (islinestarted && !c) {
-      lastx = x;
+      lastx = x+d;
       islinestarted = 0;
       break;
     }
   }
-
+pserial.println(firstx+d);
   midx60 = (lastx + firstx) / 2;          // middle of the line
   width60 = (lastx - d) - (firstx + d);
             //------------------------------------------------------------//
-            y = 30;
+ /* y = 30;
 
-/*  for (x = firstx ; x < lastx; x++) {
+  for (x = firstx ; x < lastx; x++) {
     c = tv.get_pixel(x, y);
     if (c) {
       firstx = x;
@@ -167,7 +167,7 @@ void loop() {
   angle *= -1;
 
 }
-Serial3.write(angle);  // angle to mega
+//Serial3.write(angle);  // angle to mega
 tv.fill(0);
 if (debug) {
  // tv.print(5, 5, lastx);

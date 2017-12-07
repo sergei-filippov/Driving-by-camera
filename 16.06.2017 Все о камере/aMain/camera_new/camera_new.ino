@@ -129,7 +129,7 @@ void loop() {
       break;
     }
   }
-pserial.println(firstx+d);
+  pserial.println(firstx+d);
   midx60 = (lastx + firstx) / 2;          // middle of the line
   width60 = (lastx - d) - (firstx + d);
             //------------------------------------------------------------//

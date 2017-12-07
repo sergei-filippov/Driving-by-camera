@@ -10,25 +10,9 @@ pollserial pserial;  //instead of Serial
 
 bool debug = 1;  // for debug
 bool c;  // value of the current pixel
-bool islinestarted = 0;
-bool isstopline;
-int midx = W / 2;
-int midx60, midx30;
-int d = 30;  // segment of calc  // d+line_width+d;
 
-int firstx = midx - d;
-int lastx = midx + d;
-
-
-int z = 0; // counter for any usage
 int x, y;
-int numofobj = 0; // general number of lines or objects
-int xline[10]; // positions of all first and last xs // first is odd and last is even // here only 5 objects
 
-int widthH, width60, width30;
-
-char angle, angleHto60, angleHto30;
-float cosHto60, cosHto30;
 
 void setup()  {
 
@@ -78,110 +62,48 @@ ISR(INT0_vect) {
 
 void loop() {
   tv.capture();
-
+ 
   // if tracking dark objects
   tv.fill(INVERT);
-
-
-  /*  y = 30;                       // num of line                         // full calc of line
-    for (int x = 0; x < W; x++) {
-      c = tv.get_pixel(x, y);
-      if (c == 1) {               // if black
-        xline[z] = x;
-        z++;
-        islinestarted = 1;
-      }
-      if (islinestarted && !c) {
-        xline[z] = x;
-        z++;
-        islinestarted = 0;
-      }
-    }
-  */
-  //----------------------------------------------------------//
-  y = H;
-
- /* for (x = firstx ; x < lastx; x++) {
-    c = tv.get_pixel(x, y);
-    if (c) {
-      firstx = x - d;
-      islinestarted = 1;
-    }
-    if (islinestarted && !c) {
-      lastx = x + d;
-      islinestarted = 0;
+/*
+   bool linestart;
+  int xstart,xend,linew;
+y=50;
+  for(x=44; x<85;x++){
+    c = get_pixel(x,y);                                   to find the width of line
+    if(c && !linestart){
+      linestart=1;
+      xstart = x;
+    }else if(!c && linestart){
+      linestart =0;
+      xend = x;
       break;
     }
   }
-   pserial.println(lastx);*/
-  //----------------------------------------------------------//
-  y = 60;
-
-  for (x = firstx ; x < lastx; x++) {
-    c = tv.get_pixel(x, y);
-    if (c && !islinestarted) {
-      firstx = x-d;
-      islinestarted = 1;
-    }
-    if (!c && islinestarted) {
-      lastx = x+d;
-      islinestarted = 0;
-      break;
-    }
-  }
-pserial.println(firstx+d);
-  midx60 = (lastx + firstx) / 2;          // middle of the line
-  width60 = (lastx - d) - (firstx + d);
-            //------------------------------------------------------------//
- /* y = 30;
-
-  for (x = firstx ; x < lastx; x++) {
-    c = tv.get_pixel(x, y);
-    if (c) {
-      firstx = x;
-      islinestarted = 1;
-    }
-    if (islinestarted && !c) {
-      lastx = x;
-      islinestarted = 0;
-      break;
-    }
-  }
-  midx30 = (lastx + firstx) / 2;          // middle of the line
-  width30 = (lastx - d) - (firstx + d);
+  linew = xend-xstart;
 */
 
 
- /* if (width30 > ? && width60 < H - 10 ) { // what is normal?
-    isstopline = 1;
-  }*/
+//----------------------------// to find a distance */
+
+//найти коэффициент для перевода из количества пискелей до обьекта (вертикально от камеры(нижней средней)) в см.
 
 
-  cosHto60 = float(36) / sqrt((midx - midx60) * (midx - midx60) + (36 * 36)); // 36 is H(96) - 60
-  cosHto30 = float(66) / sqrt((midx - midx30) * (midx - midx30) + (66 * 66)); // 66 is H(96) - 30
 
-  angleHto60 = acos(cosHto60) * 57.2956;
-  angleHto30 = acos(cosHto30) * 57.2956;
-  angle = (angleHto60 + angleHto30) / 2;
-  if (midx60 > midx) {
-  angle *= -1;
+//--------------------------//
 
-}
-//Serial3.write(angle);  // angle to mega
-tv.fill(0);
-if (debug) {
- // tv.print(5, 5, lastx);
+//----------------------------------// 
 
-    tv.draw_line(0, 0, 0, H-1, 1);       // drawing a rectangle
-    tv.draw_line(0, H-1, W-1, H-1, 1);
-    tv.draw_line(W-1, H-1, W-1, 0, 1);
-    tv.draw_line(W-1, 0, 0, 0, 1);
-
-    tv.draw_line(midx, H, midx60, 60, 1);
-   // tv.draw_line(midx, midx60, midx30, 30, 1);
+  tv.fill(0);
+  if (debug) {
+    // tv.print(5, 5, lastx);
+    tv.draw_line(0, 0, 0, H - 1, 1);     // drawing a rectangle
+    tv.draw_line(0, H - 1, W - 1, H - 1, 1);
+    tv.draw_line(W - 1, H - 1, W - 1, 0, 1);
+    tv.draw_line(W - 1, 0, 0, 0, 1);
   }
 
   tv.resume();
-  tv.delay_frame(5);
+  tv.delay_frame(2);
 
 }

@@ -99,9 +99,9 @@ void loop() {
     }
   */
   //----------------------------------------------------------//
-  y = H;
+ /* y = H;
 
- /* for (x = firstx ; x < lastx; x++) {
+  for (x = firstx ; x < lastx; x++) {
     c = tv.get_pixel(x, y);
     if (c) {
       firstx = x - d;
@@ -115,7 +115,7 @@ void loop() {
   }
    pserial.println(lastx);*/
   //----------------------------------------------------------//
-  y = 60;
+ /* y = 60;
 
   for (x = firstx ; x < lastx; x++) {
     c = tv.get_pixel(x, y);
@@ -132,6 +132,7 @@ void loop() {
   pserial.println(firstx+d);
   midx60 = (lastx + firstx) / 2;          // middle of the line
   width60 = (lastx - d) - (firstx + d);
+  */
             //------------------------------------------------------------//
  /* y = 30;
 
@@ -155,7 +156,14 @@ void loop() {
  /* if (width30 > ? && width60 < H - 10 ) { // what is normal?
     isstopline = 1;
   }*/
-
+  y=30;
+for(x=44;x<128;x++){
+  c = tv.get_pixel(x,y);
+  if(c){
+    firstx = x;
+    break;
+  }
+}
 
   cosHto60 = float(36) / sqrt((midx - midx60) * (midx - midx60) + (36 * 36)); // 36 is H(96) - 60
   cosHto30 = float(66) / sqrt((midx - midx30) * (midx - midx30) + (66 * 66)); // 66 is H(96) - 30
@@ -170,18 +178,18 @@ void loop() {
 //Serial3.write(angle);  // angle to mega
 tv.fill(0);
 if (debug) {
- // tv.print(5, 5, lastx);
+  tv.print(5, 5, firstx);
 
     tv.draw_line(0, 0, 0, H-1, 1);       // drawing a rectangle
     tv.draw_line(0, H-1, W-1, H-1, 1);
     tv.draw_line(W-1, H-1, W-1, 0, 1);
     tv.draw_line(W-1, 0, 0, 0, 1);
 
-    tv.draw_line(midx, H, midx60, 60, 1);
-   // tv.draw_line(midx, midx60, midx30, 30, 1);
+    tv.draw_line(midx, H,firstx , 30, 1);
+    //tv.draw_line(midx, midx60, midx30, 30, 1);
   }
 
   tv.resume();
-  tv.delay_frame(5);
+  tv.delay_frame(2);
 
 }

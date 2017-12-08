@@ -12,6 +12,8 @@ bool debug = 1;  // for debug
 bool c;  // value of the current pixel
 
 int x, y;
+bool linestart = 0;
+int xstart = W,xend,linew;
 
 
 void setup()  {
@@ -65,12 +67,11 @@ void loop() {
  
   // if tracking dark objects
   tv.fill(INVERT);
-/*
-   bool linestart;
-  int xstart,xend,linew;
-y=50;
+
+   
+y=30;
   for(x=44; x<85;x++){
-    c = get_pixel(x,y);                                   to find the width of line
+    c = tv.get_pixel(x,y);                               //    to find the width of line
     if(c && !linestart){
       linestart=1;
       xstart = x;
@@ -81,7 +82,7 @@ y=50;
     }
   }
   linew = xend-xstart;
-*/
+
 
 
 //----------------------------// to find a distance */
@@ -96,14 +97,18 @@ y=50;
 
   tv.fill(0);
   if (debug) {
-    // tv.print(5, 5, lastx);
+     tv.print(5, 5, linew);
     tv.draw_line(0, 0, 0, H - 1, 1);     // drawing a rectangle
     tv.draw_line(0, H - 1, W - 1, H - 1, 1);
     tv.draw_line(W - 1, H - 1, W - 1, 0, 1);
     tv.draw_line(W - 1, 0, 0, 0, 1);
+
+       tv.draw_line(0, y, 128, y, 1);
+       tv.draw_line(44, 0, 44, H, 1);
+        tv.draw_line(84, 0, 84, H, 1);
   }
 
   tv.resume();
-  tv.delay_frame(2);
+  tv.delay_frame(4);
 
 }

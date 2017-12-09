@@ -90,13 +90,13 @@ void loop() {
   }
 */
   // draw bounding box
-/*  tv.fill(0);
-  if (found) {
+//  tv.fill(0);
+ /* if (found) {
     for (int y = minY; y <= maxY; y++) {
       tv.set_pixel(midX[y] - 3, y, 1);
     }
 
-    // tv.draw_line((maxX+minX)/2-3,maxY,(maxX+minX)/2-3,minY,1);     //vertical line
+    // tv.draw_line((maxX+minX)/2-3,maxY,(maxX+minX)/2-3,minY,1);     //vertical line*/
 
     /*  tv.draw_line(minX, minY, maxX, minY, 1);
         tv.draw_line(minX, minY, minX, maxY, 1);
@@ -111,7 +111,7 @@ void loop() {
   tv.draw_line(127, 94, 127, 0, 1);
   tv.draw_line(127, 0, 0, 0, 1);
   */
-  //tv.delay(10);
+  tv.delay(21);
   t2 = tv.millis();
   
   tv.print(5, 5, t2 - t1);

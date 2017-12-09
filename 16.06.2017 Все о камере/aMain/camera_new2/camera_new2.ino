@@ -11,9 +11,12 @@ pollserial pserial;  //instead of Serial
 bool debug = 1;  // for debug
 bool c;  // value of the current pixel
 
-int x, y;
+unsigned char x, y;
 bool linestart = 0;
-int xstart = W,xend,linew;
+bool line1 = 0, line2 = 0, line3 = 0;
+unsigned char linew[H], xstart = W - 1, xend = W - 1, linew1;
+unsigned char xstart1[H], xend1[H], xstart2[H], xend2[H];
+
 
 
 void setup()  {
@@ -64,51 +67,105 @@ ISR(INT0_vect) {
 
 void loop() {
   tv.capture();
- 
+
   // if tracking dark objects
   tv.fill(INVERT);
 
-   
-y=30;
-  for(x=44; x<85;x++){
-    c = tv.get_pixel(x,y);                               //    to find the width of line
-    if(c && !linestart){
-      linestart=1;
-      xstart = x;
-    }else if(!c && linestart){
-      linestart =0;
-      xend = x;
-      break;
+
+  for (y = 0; y < H; y += 2) {
+    for (x = 0; x < W; x += 2) {
+      c = tv.get_pixel(x, y);
+      if (c && !linestart && !line1) {
+        linestart = 1;
+        xstart = x;
+        xstart1[y] = xstart;
+
+      } else if (!c && linestart && !line1) {
+        linestart = 0;
+        xend = x - 2;
+
+
+
+        xend1[y] = xend;
+        line1 = 1;
+
+
+      } else if (c && !linestart && line1) {
+        linestart = 1;
+        xstart = x;
+
+      } else if (!c && linestart && line1) {
+        linestart = 0;
+        xend = x - 2;
+        xstart2[y] = xstart;
+        xend2[y] = xend;
+      }
     }
+
+    if ((xend - xstart) > 70) {   //if crossing
+      xstart1[y] = xstart1[y - 2]; // odd
+      xend1[y] = xend1[y - 2];
+    }
+
+
+    // linew[y] = xend1 - xstart1;
+    line1 = 0;          // set to zero to avoid influencing on other lines
+    linestart = 0;
+    xend = W - 1;
+    xstart = W - 1;
+
   }
-  linew = xend-xstart;
+
+
+  //----------------------------// to find a distance */
+
+  //найти коэффициент для перевода из количества пискелей до обьекта (вертикально от камеры(нижней средней)) в см.
 
 
 
-//----------------------------// to find a distance */
+  //--------------------------//
 
-//найти коэффициент для перевода из количества пискелей до обьекта (вертикально от камеры(нижней средней)) в см.
-
-
-
-//--------------------------//
-
-//----------------------------------// 
+  //----------------------------------//
 
   tv.fill(0);
+
+
   if (debug) {
-     tv.print(5, 5, linew);
+    /*  pserial.print(xstart);
+       pserial.print(" ");
+       pserial.println(xend);*/
+    for (y = 0; y < H - 1; y += 2) {
+    //  pserial.println(xstart1[y]);
+
+      if ( xstart2[y] != W - 1) {
+        tv.draw_line(xstart2[y], y, xend2[y], y , 1);
+      } else {
+        tv.draw_line(xstart1[y], y, xend1[y], y , 1);
+      }
+
+      xstart1[y] =  W - 1; // set to zero to avoid influencing on other lines
+      xend1[y] = W - 1;
+      xstart2[y] =  W - 1;
+      xend2[y] = W - 1;
+    }
+
+   // pserial.println("STOP");
+
+
+    //  pserial.println(linew1);
+    //  tv.print(5, 5, xend[50]);
     tv.draw_line(0, 0, 0, H - 1, 1);     // drawing a rectangle
     tv.draw_line(0, H - 1, W - 1, H - 1, 1);
     tv.draw_line(W - 1, H - 1, W - 1, 0, 1);
     tv.draw_line(W - 1, 0, 0, 0, 1);
 
-       tv.draw_line(0, y, 128, y, 1);
-       tv.draw_line(44, 0, 44, H, 1);
-        tv.draw_line(84, 0, 84, H, 1);
+    // tv.draw_line(0, y, 128, y, 1);
+    //  tv.draw_line(44, 0, 44, H, 1);
+    //  tv.draw_line(84, 0, 84, H, 1);
   }
 
   tv.resume();
-  tv.delay_frame(4);
+  // tv.delay(1000);
+  tv.delay_frame(2);
 
 }

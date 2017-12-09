@@ -14,7 +14,7 @@ void loop() {
 
   servo.write(90);
   delay(500);
-  servo.write(88);
+  servo.write(79);
   delay(500);
   
 /*  // servo.write(125);

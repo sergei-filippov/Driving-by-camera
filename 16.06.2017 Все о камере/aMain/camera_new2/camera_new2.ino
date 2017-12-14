@@ -107,12 +107,12 @@ void loop() {
       xend1[y] = xend1[y - 2];
     }
 
-  xmiddle[y] = int((xstart[y] + xend[y]) /2);
+ 
     // linew[y] = xend1 - xstart1;
     line1 = 0;          // set to zero to avoid influencing on other lines
     linestart = 0;
-    xend = W - 1;
-    xstart = W - 1;
+    xend = W ;
+    xstart = W ;
 
   }
 
@@ -134,19 +134,19 @@ void loop() {
     /*  pserial.print(xstart);
        pserial.print(" ");
        pserial.println(xend);*/
-    for (y = 0; y < H - 1; y += 2) {
+    for (y = 0; y < H ; y += 2) {
     //  pserial.println(xstart1[y]);
 
-      if ( xstart2[y] != W - 1) {
+      if ( xstart2[y] != W) {
         tv.draw_line(xstart2[y], y, xend2[y], y , 1);
       } else {
         tv.draw_line(xstart1[y], y, xend1[y], y , 1);
       }
 
-      xstart1[y] =  W - 1; // set to zero to avoid influencing on other lines
-      xend1[y] = W - 1;
-      xstart2[y] =  W - 1;
-      xend2[y] = W - 1;
+      xstart1[y] =  W ; // set to zero to avoid influencing on other lines
+      xend1[y] = W ;
+      xstart2[y] =  W ;
+      xend2[y] = W ;
     }
 
    // pserial.println("STOP");

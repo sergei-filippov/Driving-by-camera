@@ -17,7 +17,7 @@ void setup()  {
   initOverlay();
   initInputProcessing();
 
-  tv.select_font(font4x6);
+  tv.select_font(font8x8);
   tv.fill(0);
 }
 
@@ -53,68 +53,24 @@ ISR(INT0_vect) {
 
 
 void loop() {
-  t1 =  tv.millis();
+ // t1 =  tv.millis();
   tv.capture();
 
   // uncomment if tracking dark objects
  // tv.fill(INVERT);
 
-  // compute bounding box
-/*  minX = W;
-  minY = H;
-  maxX = 0;
-  maxY = 0;
-  boolean found = 0;
-  for (int y = 0; y < H; y++) {
-    minX = W;
-    maxX = 0;
-    for (int x = 0; x < W; x++) {
-      c = tv.get_pixel(x, y);
-      if (c == 1) {
-        found = true;
-        if (x < minX) {
-          minX = x;
-        }
-        if (x > maxX) {
-          maxX = x;
-        }
-        if (y < minY) {
-          minY = y;
-        }
-        if (y > maxY) {
-          maxY = y;
-        }
-      }
-    }
-    midX[y] = int((minX + maxX) / 2);
-  }
-*/
+
+
   // draw bounding box
-//  tv.fill(0);
- /* if (found) {
-    for (int y = minY; y <= maxY; y++) {
-      tv.set_pixel(midX[y] - 3, y, 1);
-    }
-
-    // tv.draw_line((maxX+minX)/2-3,maxY,(maxX+minX)/2-3,minY,1);     //vertical line*/
-
-    /*  tv.draw_line(minX, minY, maxX, minY, 1);
-        tv.draw_line(minX, minY, minX, maxY, 1);
-        tv.draw_line(maxX, minY, maxX, maxY, 1);
-        tv.draw_line(minX, maxY, maxX, maxY, 1);
-
-    // sprintf(s, "%d, %d", ((maxX + minX) / 2), ((maxY + minY) / 2));
-    //tv.print(0, 0, s);
-  }
-  tv.draw_line(0, 0, 0, 96, 1);       // drowing a rectangle
-  tv.draw_line(0, 95, 128, 95, 1);
-  tv.draw_line(127, 94, 127, 0, 1);
-  tv.draw_line(127, 0, 0, 0, 1);
-  */
-  tv.delay(21);
-  t2 = tv.millis();
+  tv.fill(1);
+ 
+  tv.draw_line(126, 95, 127, 0, 1);
+ // tv.draw_line(125, 10, 5, 10, 1);
   
-  tv.print(5, 5, t2 - t1);
+//  tv.delay(21);
+ // t2 = tv.millis();
+ // tv.set_pixel(20,20,1);
+  //tv.print(5, 5, 0);
   tv.resume();
-  tv.delay_frame(1);
+  tv.delay_frame(2);
 }

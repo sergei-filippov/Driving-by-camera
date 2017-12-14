@@ -15,7 +15,7 @@ unsigned char x, y;
 bool linestart = 0;
 bool line1 = 0, line2 = 0, line3 = 0;
 unsigned char linew[H], xstart = W - 1, xend = W - 1, linew1;
-unsigned char xstart1[H], xend1[H], xstart2[H], xend2[H];
+unsigned char xstart1[H], xend1[H], xstart2[H], xend2[H],xmiddle[H];
 
 
 
@@ -72,7 +72,7 @@ void loop() {
   tv.fill(INVERT);
 
 
-  for (y = 0; y < H; y += 2) {
+  for (y = 0; y <H;y+=20) {
     for (x = 0; x < W; x += 2) {
       c = tv.get_pixel(x, y);
       if (c && !linestart && !line1) {
@@ -107,7 +107,7 @@ void loop() {
       xend1[y] = xend1[y - 2];
     }
 
-
+  xmiddle[y] = int((xstart[y] + xend[y]) /2);
     // linew[y] = xend1 - xstart1;
     line1 = 0;          // set to zero to avoid influencing on other lines
     linestart = 0;

@@ -15,7 +15,7 @@ unsigned char x, y;
 bool linestart = 0;
 bool line1 = 0, line2 = 0, line3 = 0;
 unsigned char linew[H], xstart = W - 1, xend = W - 1, linew1;
-unsigned char xstart1[H], xend1[H], xstart2[H], xend2[H],xmiddle[H];
+unsigned char xstartm[H], xendm[H] /* m for our line (main) */ ,xstart1[H], xend1[H], xstart2[H], xend2[H],xmiddle[H];
 
 
 
@@ -134,19 +134,26 @@ void loop() {
     /*  pserial.print(xstart);
        pserial.print(" ");
        pserial.println(xend);*/
-    for (y = 0; y < H ; y += 2) {
+    for (y = 0; y < H ; y += 20) {
     //  pserial.println(xstart1[y]);
 
       if ( xstart2[y] != W) {
-        tv.draw_line(xstart2[y], y, xend2[y], y , 1);
+        xstartm[y] = xstart2[y];
+        xendm[y] = xend2[y];
+        tv.draw_line(xstartm[y], y, xendm[y], y , 1);
       } else {
-        tv.draw_line(xstart1[y], y, xend1[y], y , 1);
+        xstartm[y] = xstart1[y];
+        xendm[y] = xend1[y];
+        tv.draw_line(xstartm[y], y, xendm[y], y , 1);
       }
-
+      if(y>=20){
+      tv.draw_line(W/2, H, (xendm[y]+xstartm[y])/2, y, 1); 
+      }
       xstart1[y] =  W ; // set to zero to avoid influencing on other lines
       xend1[y] = W ;
       xstart2[y] =  W ;
       xend2[y] = W ;
+     
     }
 
    // pserial.println("STOP");

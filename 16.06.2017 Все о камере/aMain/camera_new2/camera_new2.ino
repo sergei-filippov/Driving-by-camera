@@ -14,9 +14,9 @@ bool c;  // value of the current pixel
 unsigned char x, y;
 bool linestart = 0;
 bool line1 = 0, line2 = 0, line3 = 0;
-unsigned char linew[H], xstart = W - 1, xend = W - 1, linew1, angle[H],anglem=0; /* m is for main*/;
+unsigned char linew[H], xstart = W - 1, xend = W - 1, linew1; /* m is for main*/;
 unsigned char xstartm[H], xendm[H] /* m for our line (main) */ ,xstart1[H], xend1[H], xstart2[H], xend2[H],xmiddle[H];
-double tgangle[H];
+double tgangle[H],angle[H],anglem=0;
 
 
 
@@ -152,18 +152,19 @@ void loop() {
       }
 
 
-      tgangle[y] = ((xendm[y]+xstartm[y])/2)/(H-y);
-      angle[H] = atan(tgangle[H]) * 57.2956;
-
-      anglem +=angle[H];
+      tgangle[y] = atan(1.0*((xendm[y]+xstartm[y])/2) -W/2)/(H-y);
+      angle[y] = (tgangle[y]) * 57.2956;
+ //pserial.println(tgangle[y]);
+      anglem +=angle[y];
+      pserial.println(angle[20]);
       xstart1[y] =  W ; // set to zero to avoid influencing on other lines
       xend1[y] = W ;
       xstart2[y] =  W ;
       xend2[y] = W ;
-     
+     anglem=0;
     }
-anglem /=5;  // how many lines do we count
-   pserial.println(anglem);
+//anglem /=4;  // how many lines do we count
+   //pserial.println(anglem);
    /* if (uX > dX) {
       angle *= -1;
 
@@ -173,7 +174,7 @@ anglem /=5;  // how many lines do we count
 
 
     //  pserial.println(linew1);
-    //  tv.print(5, 5, xend[50]);
+   //   tv.print(5, 5, anglem);
     tv.draw_line(0, 0, 0, H - 1, 1);     // drawing a rectangle
     tv.draw_line(0, H - 1, W - 1, H - 1, 1);
     tv.draw_line(W - 1, H - 1, W - 1, 0, 1);
@@ -186,6 +187,6 @@ anglem /=5;  // how many lines do we count
 
   tv.resume();
   // tv.delay(1000);
-  tv.delay_frame(2);
+  tv.delay_frame(4);
 
 }

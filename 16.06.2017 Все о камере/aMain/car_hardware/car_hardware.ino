@@ -56,7 +56,7 @@ void setup() {
 
 
 
-  speed1 = 70;         // usual speed
+  speed1 = 10;         // usual speed
   distanceEdge = 50;   // max distance without barrier
   slowSpeed = 50;      // speed when...
 }
@@ -100,15 +100,15 @@ void loop() {
   //---------------------------------------------------------------------//distance attributive
   d1 = 5222 / (analogRead(A6) - 13);    //changes values into cm
   d2 = 5222 / (analogRead(A7) - 13);
-//  d3 = 5222 / (analogRead(A8) - 13);
-  d3=1000;//!!
+  d3 = 5222 / (analogRead(A8) - 13);
+ 
   if ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {     // if there're barriers
     while ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
       
       d1 = 5222 / (analogRead(A6) - 13);
       d2 = 5222 / (analogRead(A7) - 13);
-    //  d3 = 5222 / (analogRead(A8) - 13);
-    d3=1000;//!!
+      d3 = 5222 / (analogRead(A8) - 13);
+  
       analogWrite(pwm, 0);
       /*Serial.println(d1);
         Serial.print(" ");

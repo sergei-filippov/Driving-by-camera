@@ -12,9 +12,9 @@ void setup() {
 
 void loop() {
 
-  servo.write(90);
+  servo.write(95);
   delay(500);
-  servo.write(79);
+  servo.write(90);
   delay(500);
   
 /*  // servo.write(125);

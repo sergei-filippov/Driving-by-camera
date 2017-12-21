@@ -18,7 +18,7 @@ char s[32];
 byte midX[2];
 // --------------for 2-nd line detection//
 int liner_end;
-int num_line = 30;
+int num_line = 20;
 int now, next;
 int count_lines = 0;
 int widths[2];
@@ -115,7 +115,7 @@ void loop() {
   maxX = 0;
   maxY = 0;
   boolean found = 0;
-  y = 30;    // the tenth row
+  y = 20;    // the tenth row
   for (int x = liner_end + 1; x < W; x++) {
     c = tv.get_pixel(x, y);
     if (c == 1) {

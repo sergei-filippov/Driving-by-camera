@@ -13,17 +13,17 @@ Servo servo;
 #define stop_sign 6
 //------------------------------//
 
-int angle, speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte;;
-
+char angle, speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte;;
+bool debug =1;
 bool stopline;
 
 
 //----------------------//motor driver - pins
-const int inaPin = 26;
-const int inbPin = 27;
-const int pwm = 3;
-const int diagaPin = 24;
-const int diagbPin = 25;
+const char inaPin = 26;
+const char inbPin = 27;
+const char pwm = 3;
+const char diagaPin = 24;
+const char diagbPin = 25;
 
 void setup() {
 
@@ -48,8 +48,10 @@ void setup() {
   digitalWrite(inaPin, LOW);
   digitalWrite(inbPin, HIGH);
 
-
+if(debug){
   Serial.begin(9600);    //pc connection
+}
+
   Serial1.begin(9600);   //seeeduino angle
   Serial2.begin(115200); //irda
   Serial3.begin(115200); //seeeduino stop line

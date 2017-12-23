@@ -9,8 +9,10 @@ TVout tv;
 pollserial pserial;  //instead of Serial
 
 bool debug = 1;  // for debug
-bool c;  // value of the current pixel
+unsigned char ncountline = 1;
 
+
+bool c;  // value of the current pixel
 unsigned char x, y;
 bool linestart = 0;
 bool line1 = 0, line2 = 0, line3 = 0;
@@ -130,67 +132,50 @@ void loop() {
 
   tv.fill(0);
 
-
-  if (debug) {
-    /*  pserial.print(xstart);
-       pserial.print(" ");
-       pserial.println(xend);*/
-    for (y = 30; y < H ; y += 66) {
-      //  pserial.println(xstart1[y]);
-
-      if ( xstart2[y] != W) {
-        xstartm[y] = xstart2[y];
-        xendm[y] = xend2[y];
-        tv.draw_line(xstartm[y], y, xendm[y], y , 1);
-      } else {
-        xstartm[y] = xstart1[y];
-        xendm[y] = xend1[y];
-        tv.draw_line(xstartm[y], y, xendm[y], y , 1);
-      }
-      if (y >= 20) {
-        tv.draw_line(W / 2, H, (xendm[y] + xstartm[y]) / 2, y, 1);
-      }
-
-
-      tgangle[y] = atan(1.0*(((xendm[y] + xstartm[y]) / 2) - (W / 2)) / (H - y));
-      angle[y] = (tgangle[y]) * 57.2956;
-      //pserial.println(tgangle[y]);
-      anglem += angle[y];
-    //  pserial.println(angle[20]);
-     
-      
-      xstart1[y] =  W ; // set to zero to avoid influencing on other lines
-      xend1[y] = W ;
-      xstart2[y] =  W ;
-      xend2[y] = W ;
-
-      
-     // tgangle[y] = 0;
-     // angle[y] = 0;
+  for (y = 30; y < H ; y += 66) {
+    if ( xstart2[y] != W) {
+      xstartm[y] = xstart2[y];
+      xendm[y] = xend2[y];
+    } else {
+      xstartm[y] = xstart1[y];
+      xendm[y] = xend1[y];
     }
-   // anglem =anglem/(1);  // how many lines do we count
+    
+   /* if (y >= 20) {
+      tv.draw_line(W / 2, H, (xendm[y] + xstartm[y]) / 2, y, 1);
+    }*/
+    
+    tgangle[y] = atan(1.0 * (((xendm[y] + xstartm[y]) / 2) - (W / 2)) / (H - y));
+    angle[y] = (tgangle[y]) * 57.2956;
+    anglem += angle[y];
+  }
+  anglem = anglem / (ncountline); // how many lines do we count
+  
+  Serial3.print(anglem);
+
+  //-----------------------------------------------------------------------------------//
+  //-----------------------------------------------------------------------------------//
+  if (debug) {
+
+    for (y = 30; y < H ; y += 66) {
+      tv.draw_line(xstartm[y], y, xendm[y], y , 1);
+    }
+
     pserial.println(anglem);
-    /* if (uX > dX) {
-       angle *= -1;
-
-      }*/
-
-    //pserial.println("STOP");
-
- tv.print(5, 5, anglem);
- Serial3.print(anglem);
-    //  pserial.println(linew1);
+    pserial.println("STOP");
+    tv.print(5, 5, anglem);
 
     tv.draw_line(0, 0, 0, H - 1, 1);     // drawing a rectangle
     tv.draw_line(0, H - 1, W - 1, H - 1, 1);
     tv.draw_line(W - 1, H - 1, W - 1, 0, 1);
     tv.draw_line(W - 1, 0, 0, 0, 1);
-
-    // tv.draw_line(0, y, 128, y, 1);
-    //  tv.draw_line(44, 0, 44, H, 1);
-    //  tv.draw_line(84, 0, 84, H, 1);
   }
-anglem = 0;
+
+  anglem = 0;
+  xstart1[y] =  W ; // set to zero to avoid influencing on other lines
+  xend1[y] = W ;
+  xstart2[y] =  W ;
+  xend2[y] = W ;
   tv.resume();
   // tv.delay(1000);
   tv.delay_frame(4);

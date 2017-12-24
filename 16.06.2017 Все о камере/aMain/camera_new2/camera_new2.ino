@@ -19,7 +19,7 @@ bool line1 = 0, line2 = 0, line3 = 0;
 unsigned char linew[H], xstart = W - 1, xend = W - 1, linew1; /* m is for main*/;
 unsigned char xstartm[H], xendm[H] /* m for our line (main) */ , xstart1[H], xend1[H], xstart2[H], xend2[H], xmiddle[H];
 double tgangle[H], angle[H], anglem = 0.0;
-
+int anglemi;
 
 
 void setup()  {
@@ -106,8 +106,8 @@ void loop() {
     }
 
     if ((xend - xstart) > 70) {   //if crossing
-      xstart1[y] = xstart1[y - 2]; // odd
-      xend1[y] = xend1[y - 2];
+      xstart1[y] =  0; // odd
+      xend1[y] = H-1;
     }
 
 
@@ -140,18 +140,18 @@ void loop() {
       xstartm[y] = xstart1[y];
       xendm[y] = xend1[y];
     }
-    
-   /* if (y >= 20) {
-      tv.draw_line(W / 2, H, (xendm[y] + xstartm[y]) / 2, y, 1);
-    }*/
-    
-    tgangle[y] = atan(1.0 * (((xendm[y] + xstartm[y]) / 2) - (W / 2)) / (H - y));
+
+    /* if (y >= 20) {
+       tv.draw_line(W / 2, H, (xendm[y] + xstartm[y]) / 2, y, 1);
+      }*/
+
+    tgangle[y] = atan(1.0 * (((xendm[y] + xstartm[y]) / 2) - (W / 2)) / ((H - y)+90));
     angle[y] = (tgangle[y]) * 57.2956;
     anglem += angle[y];
   }
   anglem = anglem / (ncountline); // how many lines do we count
-  
-  Serial3.print(anglem);
+anglemi = anglem;
+  Serial3.write(anglemi);
 
   //-----------------------------------------------------------------------------------//
   //-----------------------------------------------------------------------------------//
@@ -159,11 +159,18 @@ void loop() {
 
     for (y = 30; y < H ; y += 66) {
       tv.draw_line(xstartm[y], y, xendm[y], y , 1);
+      tv.draw_line(W / 2, H+90, (xendm[y] + xstartm[y]) / 2, y, 1);
+      xstart1[y] =  W ; // set to zero to avoid influencing on other lines
+      xend1[y] = W ;
+      xstart2[y] =  W ;
+      xend2[y] = W ;
+      xstartm[y] =  W ;
+      xendm[y] = W ;
     }
 
-    pserial.println(anglem);
-    pserial.println("STOP");
-    tv.print(5, 5, anglem);
+    pserial.print(anglemi);
+   // pserial.println("STOP");
+    tv.print(5, 5, anglemi);
 
     tv.draw_line(0, 0, 0, H - 1, 1);     // drawing a rectangle
     tv.draw_line(0, H - 1, W - 1, H - 1, 1);
@@ -172,12 +179,9 @@ void loop() {
   }
 
   anglem = 0;
-  xstart1[y] =  W ; // set to zero to avoid influencing on other lines
-  xend1[y] = W ;
-  xstart2[y] =  W ;
-  xend2[y] = W ;
+
   tv.resume();
   // tv.delay(1000);
-  tv.delay_frame(4);
+  tv.delay_frame(1);
 
 }

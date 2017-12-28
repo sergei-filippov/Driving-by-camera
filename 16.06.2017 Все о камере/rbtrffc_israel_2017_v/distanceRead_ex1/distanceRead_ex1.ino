@@ -1,4 +1,4 @@
-int d, row13,row14,row15,row12; // расстояние и значения с датчика
+int d, left,right, centre; // расстояние и значения с датчика
 void setup() {
   Serial.begin(9600);
  // pinMode(A10,INPUT);
@@ -10,20 +10,20 @@ void setup() {
 }
 
 void loop() {
-  row12=analogRead(A12);
-  row14=analogRead(A14);
-  row15=analogRead(A15);
-  row13=analogRead(A13);
+  right =analogRead(A6);
+  centre=analogRead(A7);
+  left=analogRead(A8);
+ // row13=analogRead(A13);
  //Serial.println(rowA6);
  // Serial.print(" ");
 
-    Serial.print(5222/(row12-13));
+    Serial.print(5222/(right-13));
   Serial.print(" ");
-  Serial.print(5222/(row13-13));
+  Serial.print(5222/(centre-13));
   Serial.print(" ");
-  Serial.print(5222/(row14-13));
-  Serial.print(" ");
-  Serial.print(5222/(row15-13));
+  Serial.print(5222/(left-13));
+ // Serial.print(" ");
+//  Serial.print(5222/(row15-13));
   Serial.println(" ");
   delay(200);
 

@@ -59,8 +59,8 @@ void setup() {
 
 
 
-  speed1 = 50;         // usual speed
-  distanceEdge = 40;   // max distance without barrier
+  speed1 = 70;         // usual speed
+  distanceEdge = 30;   // max distance without barrier
   slowSpeed = 50;      // speed when...
 }
 
@@ -73,16 +73,16 @@ void loop() {
   /*if (Serial2.available()) {
       irda = Serial2.read();
       Serial.println(irda);
-  }*/
-    if (Serial2.available()) {
-      irda = Serial2.read();
-      if ((irda == 0) || (irda == 1) || (irda == 4)) {  //if red,red+yellow,yellow
-         Serial.println(irda);
-        analogWrite(pwm, 0);
-        delay(50);
-      }
+    }*/
+  if (Serial2.available()) {
+    irda = Serial2.read();
+    if ((irda == 0) || (irda == 1) || (irda == 4)) {  //if red,red+yellow,yellow
+      Serial.println(irda);
+      analogWrite(pwm, 0);
+      delay(50);
     }
-  
+  }
+
 
   /*
        //----------------------------------//pedestrian crossing
@@ -97,28 +97,29 @@ void loop() {
 
 
   //----------------------------------// stop sigh
- /*     if (Serial2.available()) {
-        if (Serial2.read() == 6) {
-          analogWrite(pwm, 0);
-          delay(5000);
+  /*     if (Serial2.available()) {
+         if (Serial2.read() == 6) {
+           analogWrite(pwm, 0);
+           delay(5000);
 
-        }
-      }
+         }
+       }
   */
   //------------------------------------//
   //---------------------------------------------------------------------//distance attributive
-/*  d1 = 5222 / (analogRead(A6) - 13);    //changes values into cm
+  d1 = 5222 / (analogRead(A6) - 13);    //changes values into cm
   d2 = 5222 / (analogRead(A7) - 13);
   d3 = 5222 / (analogRead(A8) - 13);
-  if ((d1 > 0) && (d2 > 0) && (d3 > 0) && (d1 < 150) && (d2 < 150) && (d3 < 150)) {
-    if ((d1 <= distanceEdge) || (d2 <= distanceEdge)  || (d3 <= distanceEdge)) {     // if there're barriers
-      while ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
 
-        d1 = 5222 / (analogRead(A6) - 13);
-        d2 = 5222 / (analogRead(A7) - 13);
-        d3 = 5222 / (analogRead(A8) - 13);
+  if ((d1 > 0) && (d2 > 0) && (d3 > 0)) {  // some wrong values
+    if ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
 
-        analogWrite(pwm, 0);
+       
+
+
+
+      analogWrite(pwm, 0);
+      if (debug) {
         Serial.print(d1);
         Serial.print(" ");
         Serial.print(d2);
@@ -126,8 +127,10 @@ void loop() {
         Serial.print(d1);
         Serial.println(" ");
       }
+    delay(100);
+   
     }
-  }*/
+  }
   //---------------------------------------------//stopline + irda
 
   /* if (Serial3.available()) {

@@ -59,7 +59,7 @@ void setup() {
 
 
 
-  speed1 = 70;         // usual speed
+  speed1 = 50;         // usual speed
   distanceEdge = 30;   // max distance without barrier
   slowSpeed = 50;      // speed when...
 }
@@ -114,7 +114,7 @@ void loop() {
   if ((d1 > 0) && (d2 > 0) && (d3 > 0)) {  // some wrong values
     if ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
 
-       
+
 
 
 
@@ -127,8 +127,8 @@ void loop() {
         Serial.print(d1);
         Serial.println(" ");
       }
-    delay(100);
-   
+      delay(100);
+
     }
   }
   //---------------------------------------------//stopline + irda
@@ -185,7 +185,11 @@ void loop() {
     }
     //Serial.println(angle);
     angle *= -2;   // mechanic coefficient
-
+    if (angle > 36 || angle < -36) {
+      speed1 = 50;
+    } else {
+      speed1 = 50;
+    }
     angle = angle + 90;
 
     //

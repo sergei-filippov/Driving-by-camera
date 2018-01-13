@@ -4,6 +4,7 @@
 
 #define W 128       // width of the window
 #define H 96         // height of the window
+#define debugbutton 22
 
 TVout tv;
 pollserial pserial;  //instead of Serial
@@ -19,11 +20,15 @@ bool line1 = 0, line2 = 0, line3 = 0;
 unsigned char linew[H], xstart = W - 1, xend = W - 1, linew1; /* m is for main*/;
 unsigned char xstartm[H], xendm[H] /* m for our line (main) */ , xstart1[H], xend1[H], xstart2[H], xend2[H], xmiddle[H];
 double tgangle[H], angle[H], anglem = 0.0;
-int anglemi;
+int anglemi, lineofcount = 50;
 
 
 void setup()  {
+  pinMode(debugbutton, INPUT);
 
+  if (digitalRead(debugbutton) == 1) {
+    debug = 0;
+  }
   if (debug) {
     pserial.begin(9600);
   }
@@ -107,7 +112,7 @@ void loop() {
 
     if ((xend - xstart) > 70) {   //if crossing
       xstart1[y] =  0; // odd
-      xend1[y] = H-1;
+      xend1[y] = H - 1;
     }
 
 
@@ -132,7 +137,7 @@ void loop() {
 
   tv.fill(0);
 
-  for (y = 30; y < H ; y += 66) {
+  for (y = lineofcount; y < H ; y += 66) {
     if ( xstart2[y] != W) {
       xstartm[y] = xstart2[y];
       xendm[y] = xend2[y];
@@ -145,31 +150,27 @@ void loop() {
        tv.draw_line(W / 2, H, (xendm[y] + xstartm[y]) / 2, y, 1);
       }*/
 
-    tgangle[y] = atan(1.0 * (((xendm[y] + xstartm[y]) / 2) - (W / 2)) / ((H - y)+90));
+    tgangle[y] = atan(1.0 * (((xendm[y] + xstartm[y]) / 2) - (W / 2)) / ((H - y) + 90));
     angle[y] = (tgangle[y]) * 57.2956;
     anglem += angle[y];
   }
   anglem = anglem / (ncountline); // how many lines do we count
-anglemi = anglem;
+  anglemi = anglem;
+
   Serial3.write(anglemi);
+
 
   //-----------------------------------------------------------------------------------//
   //-----------------------------------------------------------------------------------//
   if (debug) {
 
-    for (y = 30; y < H ; y += 66) {
+    for (y = lineofcount; y < H ; y += 66) {
       tv.draw_line(xstartm[y], y, xendm[y], y , 1);
-      tv.draw_line(W / 2, H+90, (xendm[y] + xstartm[y]) / 2, y, 1);
-      xstart1[y] =  W ; // set to zero to avoid influencing on other lines
-      xend1[y] = W ;
-      xstart2[y] =  W ;
-      xend2[y] = W ;
-      xstartm[y] =  W ;
-      xendm[y] = W ;
+      tv.draw_line(W / 2, H + 90, (xendm[y] + xstartm[y]) / 2, y, 1);
     }
 
     pserial.print(anglemi);
-   // pserial.println("STOP");
+    // pserial.println("STOP");
     tv.print(5, 5, anglemi);
 
     tv.draw_line(0, 0, 0, H - 1, 1);     // drawing a rectangle
@@ -177,7 +178,14 @@ anglemi = anglem;
     tv.draw_line(W - 1, H - 1, W - 1, 0, 1);
     tv.draw_line(W - 1, 0, 0, 0, 1);
   }
-
+  for (y = lineofcount; y < H ; y += 66) {
+    xstart1[y] =  W ; // set to zero to avoid influencing on other lines
+    xend1[y] = W ;
+    xstart2[y] =  W ;
+    xend2[y] = W ;
+    xstartm[y] =  W ;
+    xendm[y] = W ;
+  }
   anglem = 0;
 
   tv.resume();

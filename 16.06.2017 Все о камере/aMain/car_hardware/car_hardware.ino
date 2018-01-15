@@ -12,6 +12,7 @@ Servo servo;
 #define pedestrian_crossing  5
 #define stop_sign 6
 //------------------------------//
+#define potentiometer 53
 
 int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte;
 bool debug = 1;

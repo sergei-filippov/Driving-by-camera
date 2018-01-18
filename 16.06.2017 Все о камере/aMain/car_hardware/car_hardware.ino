@@ -15,7 +15,7 @@ Servo servo;
 #define potentiometer 53
 
 int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte;
-bool debug = 1;
+bool debug = 0;
 bool stopline;
 int angle;
 
@@ -60,8 +60,8 @@ void setup() {
 
 
 
-  speed1 = 50;         // usual speed
-  distanceEdge = 30;   // max distance without barrier
+  speed1 = 70;         // usual speed
+  distanceEdge = 15;   // max distance without barrier
   slowSpeed = 50;      // speed when...
 }
 
@@ -75,7 +75,7 @@ void loop() {
       irda = Serial2.read();
       Serial.println(irda);
     }*/
-  if (Serial2.available()) {
+ /* if (Serial2.available()) {
     irda = Serial2.read();
     if ((irda == 0) || (irda == 1) || (irda == 4)) {  //if red,red+yellow,yellow
       Serial.println(irda);
@@ -83,7 +83,7 @@ void loop() {
       delay(50);
     }
   }
-
+*/
 
   /*
        //----------------------------------//pedestrian crossing
@@ -108,7 +108,7 @@ void loop() {
   */
   //------------------------------------//
   //---------------------------------------------------------------------//distance attributive
-  d1 = 5222 / (analogRead(A6) - 13);    //changes values into cm
+/*  d1 = 5222 / (analogRead(A6) - 13);    //changes values into cm
   d2 = 5222 / (analogRead(A7) - 13);
   d3 = 5222 / (analogRead(A8) - 13);
 
@@ -131,7 +131,7 @@ void loop() {
       delay(100);
 
     }
-  }
+  }*/
   //---------------------------------------------//stopline + irda
 
   /* if (Serial3.available()) {

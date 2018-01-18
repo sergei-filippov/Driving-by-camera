@@ -20,7 +20,7 @@ bool line1 = 0, line2 = 0, line3 = 0;
 unsigned char linew[H], xstart = W - 1, xend = W - 1, linew1; /* m is for main*/;
 unsigned char xstartm[H], xendm[H] /* m for our line (main) */ , xstart1[H], xend1[H], xstart2[H], xend2[H], xmiddle[H];
 double tgangle[H], angle[H], anglem = 0.0;
-int anglemi, lineofcount = 50;
+int anglemi, lineofcount = 50, countangles, preangles[5], averageangle;
 
 
 void setup()  {
@@ -31,6 +31,10 @@ void setup()  {
   }
   if (debug) {
     pserial.begin(9600);
+  }
+
+  for (int i = 0; i < 5; i++) {
+    preangles[i] = 0;
   }
 
   Serial3.begin(9600);  //angle to mega
@@ -157,9 +161,19 @@ void loop() {
   anglem = anglem / (ncountline); // how many lines do we count
   anglemi = anglem;
 
+  // Serial3.write(anglemi);
+
+  if (countangles == 5) {
+    countangles = 0;
+  }
+  preangles[countangles] = anglemi;
+  countangles += 1;
+  for (int i = 0; i < 5; i++) {
+    averageangle += preangles[i];
+  }
+  averageangle /= 5;
   Serial3.write(anglemi);
-
-
+  
   //-----------------------------------------------------------------------------------//
   //-----------------------------------------------------------------------------------//
   if (debug) {
@@ -171,7 +185,7 @@ void loop() {
 
     pserial.print(anglemi);
     // pserial.println("STOP");
-    tv.print(5, 5, anglemi);
+    tv.print(5, 5, averageangle);
 
     tv.draw_line(0, 0, 0, H - 1, 1);     // drawing a rectangle
     tv.draw_line(0, H - 1, W - 1, H - 1, 1);
@@ -187,7 +201,7 @@ void loop() {
     xendm[y] = W ;
   }
   anglem = 0;
-
+  averageangle = 0;
   tv.resume();
   // tv.delay(1000);
   tv.delay_frame(1);

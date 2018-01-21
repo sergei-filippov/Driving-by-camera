@@ -75,29 +75,29 @@ void num9()
 }
 int pwm_encoder(int pwmstart) {
 
-  int encoder_pwm = pwmstart, pwm01, pwm10,t1,t2;
+  int encoder_pwm = pwmstart, pwm01, pwm10,t1,t2=0;
   t1 = millis();
   
   while (t2-t1 < 30000) {
     t2 = millis();
-    if (digitalRead(3) == 0) {
+   
       while (digitalRead(3) == 0) {
         if (digitalRead(2) == 0) {
           encoder_pwm--;
           break;
-        }
+        
       }
     }
-    delay(5);
-    if (digitalRead(2) == 0) {
+    delay(10);
+   
       while (digitalRead(2) == 0) {
         if (digitalRead(3) == 0) {
           encoder_pwm++;
           break;
-        }
+        
       }
     }
-    delay(5);
+   // delay(5);
     pwm10 = encoder_pwm / 10;
     pwm01 = encoder_pwm % 10;
     digitalWrite(4, HIGH);
@@ -126,6 +126,7 @@ void setup()
   pinMode(4, OUTPUT);
 }
 int a, speed1 = 70;
+
 void loop()
 {
   a=pwm_encoder(speed1);

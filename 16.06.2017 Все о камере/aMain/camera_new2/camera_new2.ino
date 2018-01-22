@@ -25,6 +25,7 @@ int anglemi, lineofcount = 50, countangles, preangles[5], averageangle;
 
 void setup()  {
   pinMode(debugbutton, INPUT);
+  digitalWrite(debugbutton, HIGH);
 
   if (digitalRead(debugbutton) == 1) {
     debug = 0;

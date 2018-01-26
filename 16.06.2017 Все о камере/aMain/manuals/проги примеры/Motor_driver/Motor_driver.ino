@@ -51,8 +51,8 @@
 //  start to rotate CCW direction.
 
 
-const int inaPin = 27;
-const int inbPin = 26;
+const int inaPin = 13;
+const int inbPin = 12;
 const int pwmPin = 3;
 const int diagaPin = 10;
 const int diagbPin = 12;

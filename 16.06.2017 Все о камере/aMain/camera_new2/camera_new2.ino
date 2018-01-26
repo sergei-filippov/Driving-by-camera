@@ -25,11 +25,11 @@ int anglemi, lineofcount = 50, countangles, preangles[5], averageangle;
 
 void setup()  {
   pinMode(debugbutton, INPUT);
-  digitalWrite(debugbutton, HIGH);
+//  digitalWrite(debugbutton, HIGH);
 
-  if (digitalRead(debugbutton) == 1) {
+ /* if (digitalRead(debugbutton) == 1) {
     debug = 0;
-  }
+  }*/
   if (debug) {
     pserial.begin(9600);
   }

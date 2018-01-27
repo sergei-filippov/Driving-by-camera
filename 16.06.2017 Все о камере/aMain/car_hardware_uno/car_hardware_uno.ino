@@ -1,6 +1,10 @@
 #include <Servo.h>
+#include <SoftwareSerial.h>
+
 
 Servo servo;
+
+SoftwareSerial angleReceive(6, 7); // RX, TX
 
 
 //------------------------------//irda codes
@@ -21,9 +25,9 @@ int angle;
 
 
 //----------------------//motor driver - pins
-const char inaPin = 3;
+const char inaPin = 2;
 const char inbPin = 4;
-const char pwm = 5;
+const char pwm = 3;
 
 
 void num_all(int n) {
@@ -137,35 +141,40 @@ int pwm_encoder(int pwmstart) {
 
 
 void setup() {
-for(int i = 0;i<1000;i++){
-  pinMode(10, OUTPUT);
-  digitalWrite(10,HIGH);
-  delay(1);
-  digitalWrite(10,LOW);
-   delay(1);
-}
+  for (int i = 0; i < 1000; i++) {
+    pinMode(13, OUTPUT);
+    digitalWrite(13, HIGH);
+    delay(1);
+    digitalWrite(13, LOW);
+    delay(1);
+  }
   // -----------------------------------------------//encoder
-/*  pinMode(2, INPUT); pinMode(3, INPUT); // encoder               // pins 2-12 are reserved
+  /*  pinMode(2, INPUT); pinMode(3, INPUT); // encoder               // pins 2-12 are reserved
 
-  pinMode(6, OUTPUT); pinMode(7, OUTPUT);
-  pinMode(8, OUTPUT); pinMode(9, OUTPUT);
-  pinMode(10, OUTPUT); pinMode(11, OUTPUT);
-  pinMode(12, OUTPUT); pinMode(5, OUTPUT);
-  pinMode(4, OUTPUT);
-*/
+    pinMode(6, OUTPUT); pinMode(7, OUTPUT);
+    pinMode(8, OUTPUT); pinMode(9, OUTPUT);
+    pinMode(10, OUTPUT); pinMode(11, OUTPUT);
+    pinMode(12, OUTPUT); pinMode(5, OUTPUT);
+    pinMode(4, OUTPUT);
+  */
+
+
   //------------------------------//distance detectors
   pinMode(A0, INPUT);
   pinMode(A1, INPUT);
   pinMode(A2, INPUT);
 
-  servo.attach(6);   //possible values 55-125
+  
+  angleReceive.begin(9600);
+
+  servo.attach(5);   //possible values 55-125
   delay(1000);        // doesn't work without
 
   //-------------------------------------------//motor driver
   pinMode(inaPin, OUTPUT);   //num 5 on driver
   pinMode(inbPin, OUTPUT);   //num 4 on driver
   pinMode(pwm, OUTPUT);      //num 3 on driver
-  
+
 
 
 
@@ -177,9 +186,9 @@ for(int i = 0;i<1000;i++){
     Serial.begin(9600);    //pc connection
   }
 
- // Serial1.begin(9600);   //seeeduino angle
- // Serial2.begin(115200); //irda
- // Serial3.begin(115200); //seeeduino stop line
+  // Serial1.begin(9600);   //seeeduino angle
+  // Serial2.begin(115200); //irda
+  // Serial3.begin(115200); //seeeduino stop line
 
 
 
@@ -233,9 +242,9 @@ void loop() {
   */
   //------------------------------------//
   //---------------------------------------------------------------------//distance attributive
-  /*  d1 = 5222 / (analogRead(A6) - 13);    //changes values into cm
-    d2 = 5222 / (analogRead(A7) - 13);
-    d3 = 5222 / (analogRead(A8) - 13);
+    d1 = 5222 / (analogRead(A0) - 13);    //changes values into cm
+    d2 = 5222 / (analogRead(A1) - 13);
+    d3 = 5222 / (analogRead(A2) - 13);
 
     if ((d1 > 0) && (d2 > 0) && (d3 > 0)) {  // some wrong values
       if ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
@@ -256,7 +265,7 @@ void loop() {
         delay(100);
 
       }
-    }*/
+    }
   //---------------------------------------------//stopline + irda
 
   /* if (Serial3.available()) {
@@ -299,17 +308,17 @@ void loop() {
     }
   */
   //-----------------------------------------------------------//read from camera
-  if (Serial.available()) {
+  if (angleReceive.available()) {
     // incomingByte = Serial1.read();
 
-    angle = Serial.read();
+    angle = angleReceive.read();
 
     //    Serial.print(" ");
     if (angle > 128)
     {
       angle -= 256;
     }
-    //Serial.println(angle);
+
     angle *= -2;   // mechanic coefficient
     if (angle > 36 || angle < -36) {
       speed1 = 50;
@@ -319,7 +328,7 @@ void loop() {
     angle = angle + 90;
 
     //
-    //     Serial.print(angle);
+         //Serial.print(angle);
     //   Serial.print(" ");
 
     servo.write(angle);

@@ -4,7 +4,7 @@
 
 Servo servo;
 
-SoftwareSerial angleReceive(6, 7); // RX, TX
+SoftwareSerial angleReceive(6, 7); // RX, TX      // to be able to receive angle from seeduino
 
 
 //------------------------------//irda codes
@@ -16,136 +16,27 @@ SoftwareSerial angleReceive(6, 7); // RX, TX
 #define pedestrian_crossing  5
 #define stop_sign 6
 //------------------------------//
-#define potentiometer 53
+//#define potentiometer 53
 
-int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte;
+int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte, angle;
 bool debug = 0;
 bool stopline;
-int angle;
 
-
+const char buzzer = 13;
+const char distSensor0 = A0;
+const char distSensor1 = A1;
+const char distSensor2 = A2;
 //----------------------//motor driver - pins
-const char inaPin = 2;
+const char inaPin = 2;    //defines direction of rotating
 const char inbPin = 4;
-const char pwm = 3;
-
-
-void num_all(int n) {
-  switch (n) {
-
-    case 0: num0(); break;
-    case 1: num1(); break;
-    case 2: num2(); break;
-    case 3: num3(); break;
-    case 4: num4(); break;
-    case 5: num5(); break;
-    case 6: num6(); break;
-    case 7: num7(); break;
-    case 8: num8(); break;
-    case 9: num9(); break;
-  }
-}
-void num0()
-{
-  digitalWrite(6, LOW); digitalWrite(7, LOW);
-  digitalWrite(8, LOW); digitalWrite(9, LOW);
-  digitalWrite(10, LOW); digitalWrite(11, LOW);
-  digitalWrite(12, HIGH);
-}
-void num1()
-{
-  num3();
-  digitalWrite(6, HIGH); digitalWrite(9, HIGH); digitalWrite(12, HIGH);
-}
-
-void num2()
-{
-  num8();
-  digitalWrite(8, HIGH); digitalWrite(11, HIGH);
-}
-
-void num3()
-{
-  num8();
-  digitalWrite(10, HIGH); digitalWrite(11, HIGH);
-}
-
-void num4()
-{
-  num9();
-  digitalWrite(6, HIGH); digitalWrite(10, HIGH); digitalWrite(9, HIGH);
-}
-
-void num5()
-{
-  num8();
-  digitalWrite(10, HIGH); digitalWrite(7, HIGH);
-}
-
-void num6()
-{
-  num8();
-  digitalWrite(6, HIGH); digitalWrite(7, HIGH);
-}
-
-void num7()
-{
-  num1();
-  digitalWrite(6, LOW);
-}
-
-void num8()
-{
-  num0();
-  digitalWrite(12, LOW);
-}
-
-void num9()
-{
-  num8();
-  digitalWrite(10, HIGH);
-}
-int pwm_encoder(int pwmstart) {
-  int encoder_pwm = pwmstart, pwm01, pwm10, t1, t2 = 0;
-  t1 = millis();
-  while (t2 - t1 < 30000) {
-    t2 = millis();
-
-    while (digitalRead(3) == 0) {
-      if (digitalRead(2) == 0) {
-        encoder_pwm--;
-        break;
-      }
-    }
-    delay(10);
-
-    while (digitalRead(2) == 0) {
-      if (digitalRead(3) == 0) {
-        encoder_pwm++;
-        break;
-      }
-    }
-    pwm10 = encoder_pwm / 10;
-    pwm01 = encoder_pwm % 10;
-    digitalWrite(4, HIGH);
-    digitalWrite(5, LOW);
-    num_all(pwm01);
-    delay(10);
-    digitalWrite(4, LOW);
-    digitalWrite(5, HIGH);
-    num_all(pwm10);
-  }
-  //Serial.println(encoder_pwm);
-  return (encoder_pwm);
-}
-
+const char pwm = 3;      //values from 0 - 255
 
 void setup() {
   for (int i = 0; i < 1000; i++) {
-    pinMode(13, OUTPUT);
-    digitalWrite(13, HIGH);
+    pinMode(buzzer, OUTPUT);
+    digitalWrite(buzzer, HIGH);
     delay(1);
-    digitalWrite(13, LOW);
+    digitalWrite(buzzer, LOW);
     delay(1);
   }
   // -----------------------------------------------//encoder
@@ -160,12 +51,9 @@ void setup() {
 
 
   //------------------------------//distance detectors
-  pinMode(A0, INPUT);
-  pinMode(A1, INPUT);
-  pinMode(A2, INPUT);
-
-  
-  angleReceive.begin(9600);
+  pinMode(distSensor0, INPUT);
+  pinMode(distSensor1, INPUT);
+  pinMode(distSensor2, INPUT);
 
   servo.attach(5);   //possible values 55-125
   delay(1000);        // doesn't work without
@@ -176,8 +64,6 @@ void setup() {
   pinMode(pwm, OUTPUT);      //num 3 on driver
 
 
-
-
   //-------------------------//motors
   digitalWrite(inaPin, LOW);
   digitalWrite(inbPin, HIGH);
@@ -186,17 +72,13 @@ void setup() {
     Serial.begin(9600);    //pc connection
   }
 
-  // Serial1.begin(9600);   //seeeduino angle
-  // Serial2.begin(115200); //irda
-  // Serial3.begin(115200); //seeeduino stop line
-
-
+  angleReceive.begin(9600);
 
   speed1 = 70;         // usual speed
-  distanceEdge = 15;   // max distance without barrier
   slowSpeed = 50;      // speed when...
 
-  // speed1=pwm_encoder(speed1);
+  distanceEdge = 15;   // max distance without barrier
+
 }
 
 void loop() {
@@ -242,15 +124,13 @@ void loop() {
   */
   //------------------------------------//
   //---------------------------------------------------------------------//distance attributive
-    d1 = 5222 / (analogRead(A0) - 13);    //changes values into cm
-    d2 = 5222 / (analogRead(A1) - 13);
-    d3 = 5222 / (analogRead(A2) - 13);
+  d1 = 5222 / (analogRead(distSensor0) - 13);    //changes values into cm
+  d2 = 5222 / (analogRead(distSensor1) - 13);
+  d3 = 5222 / (analogRead(distSensor2) - 13);
 
-    if ((d1 > 0) && (d2 > 0) && (d3 > 0)) {  // some wrong values
-      if ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
-
-
-
+  if ((d1 > 0) && (d2 > 0) && (d3 > 0)) {  // some wrong values
+    if ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
+      while ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
 
 
         analogWrite(pwm, 0);
@@ -262,10 +142,10 @@ void loop() {
           Serial.print(d1);
           Serial.println(" ");
         }
-        delay(100);
-
+   
       }
     }
+  }
   //---------------------------------------------//stopline + irda
 
   /* if (Serial3.available()) {
@@ -328,7 +208,7 @@ void loop() {
     angle = angle + 90;
 
     //
-         //Serial.print(angle);
+    //Serial.print(angle);
     //   Serial.print(" ");
 
     servo.write(angle);

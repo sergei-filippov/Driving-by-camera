@@ -21,7 +21,7 @@ unsigned char linew[H], xstart = W - 1, xend = W - 1, linew1; /* m is for main*/
 unsigned char xstartm[H], xendm[H] /* m for our line (main) */ , xstart1[H], xend1[H], xstart2[H], xend2[H], xmiddle[H];
 double tgangle[H], angle[H], anglem = 0.0;
 int anglemi, lineofcount = 50, countangles, preangles[5], averageangle;
-
+int xshift = 30;  // amount of px to shift middle of the line to the left
 
 void setup()  {
   // pinMode(debugbutton, INPUT_PULLUP);
@@ -156,7 +156,7 @@ void loop() {
        tv.draw_line(W / 2, H, (xendm[y] + xstartm[y]) / 2, y, 1);
       }*/
 
-    tgangle[y] = atan(1.0 * (((xendm[y] + xstartm[y]) / 2) - (W / 2)) / ((H - y) + 90));
+    tgangle[y] = atan(1.0 * ((((xendm[y] + xstartm[y]) / 2) + xshift) - (W / 2)) / ((H - y) + 90));
     angle[y] = (tgangle[y]) * 57.2956;
     anglem += angle[y];
   }

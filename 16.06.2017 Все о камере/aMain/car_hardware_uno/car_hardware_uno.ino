@@ -6,6 +6,8 @@ Servo servo;
 
 SoftwareSerial angleReceive(6, 7); // RX, TX      // to be able to receive angle from seeduino
 
+SoftwareSerial irdaSignal(11, 12); // RX, TX      //irda connection
+
 
 //------------------------------//irda codes
 #define red 0
@@ -19,7 +21,7 @@ SoftwareSerial angleReceive(6, 7); // RX, TX      // to be able to receive angle
 //#define potentiometer 53
 
 int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte, angle;
-bool debug = 0;
+bool debug = 1;
 bool stopline;
 
 const char buzzer = 13;
@@ -69,10 +71,11 @@ void setup() {
   digitalWrite(inbPin, HIGH);
 
   if (debug) {
-    Serial.begin(9600);    //pc connection
+    Serial.begin(115200);    //pc connection
   }
 
   angleReceive.begin(9600);
+  irdaSignal.begin(115200);
 
   speed1 = 70;         // usual speed
   slowSpeed = 50;      // speed when...
@@ -82,7 +85,7 @@ void setup() {
 }
 
 void loop() {
-
+Serial.println(irda);
   analogWrite(pwm, speed1);  //start the engine
 
   //------------------------------------------------------------------------// check signals
@@ -91,15 +94,14 @@ void loop() {
       irda = Serial2.read();
       Serial.println(irda);
     }*/
-  /* if (Serial2.available()) {
-     irda = Serial2.read();
+   if (irdaSignal.available()) {
+     irda = irdaSignal.read();
      if ((irda == 0) || (irda == 1) || (irda == 4)) {  //if red,red+yellow,yellow
-       Serial.println(irda);
        analogWrite(pwm, 0);
-       delay(50);
+       delay(1000);
      }
     }
-  */
+  
 
   /*
        //----------------------------------//pedestrian crossing
@@ -114,23 +116,23 @@ void loop() {
 
 
   //----------------------------------// stop sigh
-  /*     if (Serial2.available()) {
-         if (Serial2.read() == 6) {
+      if (irdaSignal.available()) {
+         if (irdaSignal.read() == 6) {
            analogWrite(pwm, 0);
            delay(5000);
 
          }
        }
-  */
+  
   //------------------------------------//
   //---------------------------------------------------------------------//distance attributive
-  d1 = 5222 / (analogRead(distSensor0) - 13);    //changes values into cm
+d1 = 5222 / (analogRead(distSensor0) - 13);    //changes values into cm
   d2 = 5222 / (analogRead(distSensor1) - 13);
   d3 = 5222 / (analogRead(distSensor2) - 13);
 
   if ((d1 > 0) && (d2 > 0) && (d3 > 0)) {  // some wrong values
     if ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
-      while ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
+      
 
 
         analogWrite(pwm, 0);
@@ -139,11 +141,11 @@ void loop() {
           Serial.print(" ");
           Serial.print(d2);
           Serial.print(" ");
-          Serial.print(d1);
+          Serial.print(d3);
           Serial.println(" ");
         }
-   
-      }
+   delay(1000);
+      
     }
   }
   //---------------------------------------------//stopline + irda

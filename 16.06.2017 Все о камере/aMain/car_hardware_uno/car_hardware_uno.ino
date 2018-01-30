@@ -20,6 +20,7 @@ SoftwareSerial irdaSignal(11, 12); // RX, TX      //irda connection
 //------------------------------//
 //#define potentiometer 53
 
+int currentspeed ;
 int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte, angle;
 bool debug = 1;
 bool stopline;
@@ -78,15 +79,15 @@ void setup() {
   irdaSignal.begin(115200);
 
   speed1 = 70;         // usual speed
-  slowSpeed = 50;      // speed when...
+  currentspeed = speed1;      // speed when...
 
   distanceEdge = 15;   // max distance without barrier
 
 }
 
 void loop() {
-Serial.println(irda);
-  analogWrite(pwm, speed1);  //start the engine
+  //Serial.println(irda);
+  analogWrite(pwm, currentspeed);  //start the engine
 
   //------------------------------------------------------------------------// check signals
 
@@ -94,14 +95,21 @@ Serial.println(irda);
       irda = Serial2.read();
       Serial.println(irda);
     }*/
-   if (irdaSignal.available()) {
-     irda = irdaSignal.read();
-     if ((irda == 0) || (irda == 1) || (irda == 4)) {  //if red,red+yellow,yellow
-       analogWrite(pwm, 0);
-       delay(1000);
-     }
+  if (irdaSignal.available()) {
+    irda = irdaSignal.read();
+    Serial.println(irda);
+    if ((irda == 0) || (irda == 1) || (irda == 4)) {  //if red,red+yellow,yellow
+      currentspeed = 0;
+
     }
-  
+    for (int i = 0; i < 64; i++) {
+      Serial.available();
+    }
+    irdaSignal.overflow();
+  } else {
+    currentspeed = speed1;
+  }
+
 
   /*
        //----------------------------------//pedestrian crossing
@@ -116,37 +124,38 @@ Serial.println(irda);
 
 
   //----------------------------------// stop sigh
-      if (irdaSignal.available()) {
-         if (irdaSignal.read() == 6) {
-           analogWrite(pwm, 0);
-           delay(5000);
+  /*   if (irdaSignal.available()) {
+       irda = irdaSignal.read();
+        if (irda == 6) {
+          analogWrite(pwm, 0);
+          delay(5000);
 
-         }
-       }
-  
+        }
+      }
+  */
   //------------------------------------//
   //---------------------------------------------------------------------//distance attributive
-d1 = 5222 / (analogRead(distSensor0) - 13);    //changes values into cm
+  d1 = 5222 / (analogRead(distSensor0) - 13);    //changes values into cm
   d2 = 5222 / (analogRead(distSensor1) - 13);
   d3 = 5222 / (analogRead(distSensor2) - 13);
 
   if ((d1 > 0) && (d2 > 0) && (d3 > 0)) {  // some wrong values
     if ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
-      
 
+      currentspeed = 0;
+      /*     if (debug) {
+             Serial.print(d1);
+             Serial.print(" ");
+             Serial.print(d2);
+             Serial.print(" ");
+             Serial.print(d3);
+             Serial.println(" ");
+           }*/
+      // delay(1000);
 
-        analogWrite(pwm, 0);
-        if (debug) {
-          Serial.print(d1);
-          Serial.print(" ");
-          Serial.print(d2);
-          Serial.print(" ");
-          Serial.print(d3);
-          Serial.println(" ");
-        }
-   delay(1000);
-      
     }
+  }else{
+    currentspeed = speed1;
   }
   //---------------------------------------------//stopline + irda
 
@@ -170,7 +179,7 @@ d1 = 5222 / (analogRead(distSensor0) - 13);    //changes values into cm
 
       }
     }
-    }*/
+    }
 
   /*
     irda = Serial2.read();

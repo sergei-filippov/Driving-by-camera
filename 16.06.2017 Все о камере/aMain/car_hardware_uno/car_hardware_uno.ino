@@ -21,7 +21,8 @@ SoftwareSerial irdaSignal(11, 12); // RX, TX      //irda connection
 //#define potentiometer 53
 
 int currentspeed ;
-int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte, angle;
+int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte, angle=0;
+int newangle;
 bool debug = 1;
 bool stopline;
 
@@ -154,7 +155,7 @@ void loop() {
       // delay(1000);
 
     }
-  }else{
+  } else {
     currentspeed = speed1;
   }
   //---------------------------------------------//stopline + irda
@@ -181,7 +182,7 @@ void loop() {
     }
     }
 
-  /*
+    /*
     irda = Serial2.read();
     if (irda == 0 || irda == 1 || irda == 4) {
       speed1 = speedBeforCrossing;
@@ -202,20 +203,21 @@ void loop() {
   if (angleReceive.available()) {
     // incomingByte = Serial1.read();
 
-    angle = angleReceive.read();
+    newangle = angleReceive.read();
 
     //    Serial.print(" ");
-    if (angle > 128)
+    if (newangle > 128)
     {
-      angle -= 256;
+      newangle -= 256;
     }
+    newangle *= -1; // reverse the sign of angle
+    //---------------------------------------------------------//if the values are inapropriate 
+    if((newangle >= (angle-7)) || (newangle <= (angle+7))){
+       angle = newangle;
+    }
+     
+    angle *= 2;   // mechanic coefficient
 
-    angle *= -2;   // mechanic coefficient
-    if (angle > 36 || angle < -36) {
-      speed1 = 50;
-    } else {
-      speed1 = 50;
-    }
     angle = angle + 90;
 
     //

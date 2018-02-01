@@ -34,14 +34,14 @@ void setup()  {
     debug = 0;
   }
   if (debug) {
-    pserial.begin(9600);
+    pserial.begin(115200);
   }
 
   for (int i = 0; i < 5; i++) {
     preangles[i] = 0;
   }
 
-  Serial3.begin(9600);  //angle to mega
+  Serial3.begin(115200);  //angle to mega
 
   tv.begin(PAL, W, H);
   initOverlay();
@@ -182,7 +182,7 @@ void loop() {
   }
   averageangle /= 5;
   Serial3.write(averageangle);
-
+pserial.print(averageangle);
   //-----------------------------------------------------------------------------------//
   //-----------------------------------------------------------------------------------//
   if (debug) {
@@ -192,7 +192,7 @@ void loop() {
       tv.draw_line(W / 2, H + 90, midx, y, 1);
     }
 
-    pserial.print(anglemi);
+    
     // pserial.println("STOP");
     tv.print(5, 5, averageangle);
 

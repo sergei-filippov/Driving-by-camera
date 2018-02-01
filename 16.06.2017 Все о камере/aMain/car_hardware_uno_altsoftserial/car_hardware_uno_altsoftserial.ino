@@ -1,10 +1,10 @@
 #include <Servo.h>
 #include <SoftwareSerial.h>
-
+#include <AltSoftSerial.h>
 
 Servo servo;
-
-SoftwareSerial angleReceive(6, 7); // RX, TX      // to be able to receive angle from seeduino
+SoftwareSerial irdaSignal(11, 12); // RX, TX      //irda connection
+AltSoftSerial angleReceive; //(6, 7); // RX, TX      // to be able to receive angle from seeduino
 
 
 
@@ -211,9 +211,9 @@ void loop() {
     }
     newangle *= -1; // reverse the sign of angle
     //---------------------------------------------------------//if the values are inapropriate 
-  /*  if((newangle >= (angle-7)) || (newangle <= (angle+7))){
-       angle = newangle;
-    }*/
+    if(abs(newangle) <= angle+7){    // if newangle less than angle(previous) +7 its okey
+         angle = newangle;
+    }
      
     angle *= 2;   // mechanic coefficient
 

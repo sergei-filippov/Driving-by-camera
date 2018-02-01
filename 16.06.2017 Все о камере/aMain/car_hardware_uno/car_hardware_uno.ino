@@ -212,9 +212,9 @@ void loop() {
     }
     newangle *= -1; // reverse the sign of angle
     //---------------------------------------------------------//if the values are inapropriate 
-    if((newangle >= (angle-7)) || (newangle <= (angle+7))){
+  /*  if((newangle >= (angle-7)) || (newangle <= (angle+7))){
        angle = newangle;
-    }
+    }*/
      
     angle *= 2;   // mechanic coefficient
 

@@ -26,7 +26,7 @@ int newangle;
 bool debug = 1;
 bool stopline;
 
-const char buzzer = 13;
+
 const char distSensor0 = A0;
 const char distSensor1 = A1;
 const char distSensor2 = A2;

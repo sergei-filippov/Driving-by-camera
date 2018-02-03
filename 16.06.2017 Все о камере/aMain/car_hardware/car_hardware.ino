@@ -47,6 +47,8 @@ const char distSensor1 = A1;
 const char distSensor2 = A2;
 //----------------------------//
 const char buzzer = 13;
+
+
 void num_all(int n) {
   switch (n) {
 

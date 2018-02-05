@@ -36,17 +36,16 @@ bool debug = 1;
 bool stopline;
 int angle;
 
-
 //----------------------//motor driver - pins
-const char inaPin = 52;
-const char inbPin = 53;
-const char pwm = 51;
+const char inaPin = 47;
+const char inbPin = 48;
+const char pwm = 13;
 //-------------------------//
 const char distSensor0 = A13;
 const char distSensor1 = A14;
 const char distSensor2 = A15;
 //----------------------------//
-const char buzzer = 13;
+const char buzzer = 59;
 
 
 void num_all(int n) {
@@ -127,7 +126,7 @@ void num9()
 int pwm_encoder(int pwmstart) {
   int encoder_pwm = pwmstart, pwm01, pwm10, t1, t2 = 0;
   t1 = millis();
-  while (t2 - t1 < 10000) {
+  while (t2 - t1 < 5000) {
     t2 = millis();
 
     while (digitalRead(3) == 0) {
@@ -182,7 +181,7 @@ void setup() {
   pinMode(distSensor1, INPUT);
   pinMode(distSensor2, INPUT);
 
-  servo.attach(27);   //possible values 55-125
+  servo.attach(53);   //possible values 55-125
   delay(1000);        // doesn't work without
 
   //-------------------------------------------//motor driver
@@ -216,9 +215,9 @@ void setup() {
     for (int i = 0; i < 500; i++) {
     pinMode(buzzer, OUTPUT);
     digitalWrite(buzzer, HIGH);
-    delay(2);
+    delay(3);
     digitalWrite(buzzer, LOW);
-    delay(2);
+    delay(3);
   }
 }
 
@@ -234,8 +233,8 @@ void loop() {
     }*/
   if (Serial2.available()) {
     irda = Serial2.read();
-    if ((irda == 0) || (irda == 1) || (irda == 4)) {  //if red,red+yellow,yellow
-      // Serial.println(irda);
+    if ((irda == 0) || (irda == 1) || (irda == 3) || (irda == 4)) {  //if red,red+yellow,blinking green,yellow
+       Serial.println(irda);
       currentspeed = 0;
 
     } else {
@@ -283,7 +282,7 @@ void loop() {
          Serial.println(" ");*/
       Serial.println("barrier");
     }
-  } else {
+  }/* else {
     currentspeed = speed1;
   }
 
@@ -344,9 +343,9 @@ void loop() {
     }
     newangle *= -1; // reverse the sign of angle
     //---------------------------------------------------------//if the values are inapropriate
-    if ((newangle >= (angle - 7)) || (newangle <= (angle + 7))) {
+ //   if ((newangle >= (angle - 7)) || (newangle <= (angle + 7))) {
       angle = newangle;
-    }
+  //  }
 
     angle *= 2;   // mechanic coefficient
 

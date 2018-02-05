@@ -5,8 +5,8 @@
   2-3 encoder
   2-12 LEDs
 
-  21 - serva
-  51 pwm motot
+  27 - serva
+  51 pwm motor
   52-53 ina inb // motordriver
 
   a13-a15 distance sensors
@@ -31,20 +31,20 @@ Servo servo;
 //------------------------------//
 
 
-int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte, currentspeed,newangle;
-bool debug = 0;
+int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte, currentspeed, newangle;
+bool debug = 1;
 bool stopline;
 int angle;
 
 
 //----------------------//motor driver - pins
 const char inaPin = 52;
-const char inbPin = 23;
+const char inbPin = 53;
 const char pwm = 51;
 //-------------------------//
-const char distSensor0 = A0;
-const char distSensor1 = A1;
-const char distSensor2 = A2;
+const char distSensor0 = A13;
+const char distSensor1 = A14;
+const char distSensor2 = A15;
 //----------------------------//
 const char buzzer = 13;
 
@@ -127,7 +127,7 @@ void num9()
 int pwm_encoder(int pwmstart) {
   int encoder_pwm = pwmstart, pwm01, pwm10, t1, t2 = 0;
   t1 = millis();
-  while (t2 - t1 < 30000) {
+  while (t2 - t1 < 10000) {
     t2 = millis();
 
     while (digitalRead(3) == 0) {
@@ -160,7 +160,7 @@ int pwm_encoder(int pwmstart) {
 
 
 void setup() {
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < 500; i++) {
     pinMode(buzzer, OUTPUT);
     digitalWrite(buzzer, HIGH);
     delay(1);
@@ -201,7 +201,7 @@ void setup() {
     Serial.begin(9600);    //pc connection
   }
 
-  Serial1.begin(9600);   //seeeduino angle
+  Serial1.begin(115200);   //seeeduino angle
   Serial2.begin(115200); //irda
   Serial3.begin(115200); //seeeduino stop line
 
@@ -212,10 +212,18 @@ void setup() {
 
 
   speed1 = pwm_encoder(speed1);
+
+    for (int i = 0; i < 500; i++) {
+    pinMode(buzzer, OUTPUT);
+    digitalWrite(buzzer, HIGH);
+    delay(2);
+    digitalWrite(buzzer, LOW);
+    delay(2);
+  }
 }
 
 void loop() {
-
+  //Serial.println(currentspeed);
   analogWrite(pwm, currentspeed);  //start the engine
 
   //------------------------------------------------------------------------// check signals
@@ -263,22 +271,22 @@ void loop() {
   d2 = 5222 / (analogRead(distSensor1) - 13);
   d3 = 5222 / (analogRead(distSensor2) - 13);
 
-  if ((d1 > 0) && (d2 > 0) && (d3 > 0)) {  // some wrong values
-    if ((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) {
 
-      currentspeed = 0;
-      if (debug) {
-        Serial.print(d1);
-        Serial.print(" ");
-        Serial.print(d2);
-        Serial.print(" ");
-        Serial.print(d1);
-        Serial.println(" ");
-      }
+  if (((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) && (d1 > 0) && (d2 > 0) && (d3 > 0)) {
+    currentspeed = 0;
+    if (debug) {
+      /*   Serial.print(d1);
+         Serial.print(" ");
+         Serial.print(d2);
+         Serial.print(" ");
+         Serial.print(d1);
+         Serial.println(" ");*/
+      Serial.println("barrier");
     }
   } else {
     currentspeed = speed1;
   }
+
   //---------------------------------------------//stopline + irda
 
   /* if (Serial3.available()) {
@@ -325,18 +333,21 @@ void loop() {
     // incomingByte = Serial1.read();
 
     newangle = Serial1.read();
- 
-    //    Serial.print(" ");
+
+    /*       Serial.print(newangle);
+            Serial.print(" ");
+            Serial.println(angle);*/
+
     if (newangle > 128)
     {
       newangle -= 256;
     }
     newangle *= -1; // reverse the sign of angle
-    //---------------------------------------------------------//if the values are inapropriate 
-  /*  if((newangle >= (angle-7)) || (newangle <= (angle+7))){
-       angle = newangle;
-    }*/
-     
+    //---------------------------------------------------------//if the values are inapropriate
+    if ((newangle >= (angle - 7)) || (newangle <= (angle + 7))) {
+      angle = newangle;
+    }
+
     angle *= 2;   // mechanic coefficient
 
     angle = angle + 90;

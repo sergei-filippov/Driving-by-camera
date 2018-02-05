@@ -41,7 +41,7 @@ void setup()  {
     preangles[i] = 0;
   }
 
-  Serial3.begin(9600);  //angle to mega
+  Serial3.begin(115200);  //angle to mega
 
   tv.begin(PAL, W, H);
   initOverlay();

@@ -41,7 +41,7 @@ void setup()  {
     preangles[i] = 0;
   }
 
-  Serial3.begin(115200);  //angle to mega
+  Serial2.begin(115200);  //angle to mega
 
   tv.begin(PAL, W, H);
   initOverlay();
@@ -181,7 +181,7 @@ void loop() {
     averageangle += preangles[i];
   }
   averageangle /= 5;
-  Serial3.write(averageangle);
+  Serial2.write(averageangle);
 pserial.print(averageangle);
   //-----------------------------------------------------------------------------------//
   //-----------------------------------------------------------------------------------//

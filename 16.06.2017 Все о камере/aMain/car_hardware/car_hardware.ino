@@ -36,6 +36,8 @@ bool debug = 1;
 bool stopline;
 int angle;
 
+bool irdastop = 0, distancestop = 0;
+
 //----------------------//motor driver - pins
 const char inaPin = 47;
 const char inbPin = 48;
@@ -212,7 +214,7 @@ void setup() {
 
   speed1 = pwm_encoder(speed1);
 
-    for (int i = 0; i < 500; i++) {
+  for (int i = 0; i < 500; i++) {
     pinMode(buzzer, OUTPUT);
     digitalWrite(buzzer, HIGH);
     delay(3);
@@ -222,9 +224,12 @@ void setup() {
 }
 
 void loop() {
-  //Serial.println(currentspeed);
-  analogWrite(pwm, currentspeed);  //start the engine
-
+ 
+  if (irdastop || distancestop) {
+    analogWrite(pwm, 0);  //start the engine
+  } else {
+    analogWrite(pwm, speed1);  //start the engine
+  }
   //------------------------------------------------------------------------// check signals
 
   /*if (Serial2.available()) {
@@ -234,11 +239,11 @@ void loop() {
   if (Serial2.available()) {
     irda = Serial2.read();
     if ((irda == 0) || (irda == 1) || (irda == 3) || (irda == 4)) {  //if red,red+yellow,blinking green,yellow
-       Serial.println(irda);
-      currentspeed = 0;
+      Serial.println(irda);
+      irdastop = 1;
 
     } else {
-      currentspeed = speed1;
+      irdastop = 0;
     }
   }
 
@@ -272,18 +277,18 @@ void loop() {
 
 
   if (((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) && (d1 > 0) && (d2 > 0) && (d3 > 0)) {
-    currentspeed = 0;
+    distancestop = 1;
     if (debug) {
-      /*   Serial.print(d1);
-         Serial.print(" ");
-         Serial.print(d2);
-         Serial.print(" ");
-         Serial.print(d1);
-         Serial.println(" ");*/
+      Serial.print(d1);
+      Serial.print(" ");
+      Serial.print(d2);
+      Serial.print(" ");
+      Serial.print(d1);
+      Serial.println(" ");
       Serial.println("barrier");
     }
-  }/* else {
-    currentspeed = speed1;
+  } else {
+    distancestop = 0;
   }
 
   //---------------------------------------------//stopline + irda
@@ -343,9 +348,9 @@ void loop() {
     }
     newangle *= -1; // reverse the sign of angle
     //---------------------------------------------------------//if the values are inapropriate
- //   if ((newangle >= (angle - 7)) || (newangle <= (angle + 7))) {
-      angle = newangle;
-  //  }
+    //   if ((newangle >= (angle - 7)) || (newangle <= (angle + 7))) {
+    angle = newangle;
+    //  }
 
     angle *= 2;   // mechanic coefficient
 

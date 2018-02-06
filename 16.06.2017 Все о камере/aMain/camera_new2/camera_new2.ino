@@ -20,7 +20,7 @@ bool line1 = 0, line2 = 0, line3 = 0;
 unsigned char linew[H], xstart = W - 1, xend = W - 1, linew1; /* m is for main*/;
 unsigned char xstartm[H], xendm[H] /* m for our line (main) */ , xstart1[H], xend1[H], xstart2[H], xend2[H], xmiddle[H];
 double tgangle[H], angle[H], anglem = 0.0;
-int anglemi, lineofcount = 50, countangles, preangles[5], averageangle;
+int anglemi, lineofcount = 80, countangles, preangles[5], averageangle;
 
 int xshift = 30;  // amount of px to shift middle of the line to reduce the angle
 int midx = 0; //(xendm[y] + xstartm[y]) / 2)
@@ -46,7 +46,7 @@ void setup()  {
   tv.begin(PAL, W, H);
   initOverlay();
   initInputProcessing();
-  tv.select_font(font4x6);
+  tv.select_font(font8x8);
   tv.fill(0);
 }
 
@@ -87,7 +87,7 @@ void loop() {
   // if tracking dark objects
   tv.fill(INVERT);
   
-  for (y = 0; y < H; y += 10) {
+  for (y = lineofcount; y < H; y += 66) {
     for (x = 0; x < W; x += 1) {
       c = tv.get_pixel(x, y);
       if (c && !linestart && !line1) {

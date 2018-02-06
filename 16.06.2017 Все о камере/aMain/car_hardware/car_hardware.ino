@@ -32,11 +32,13 @@ Servo servo;
 
 
 int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte, currentspeed, newangle;
-bool debug = 1;
+bool debug = 0;
 bool stopline;
 int angle;
 
-bool irdastop = 0, distancestop = 0;
+int speedstraight; //less then main (speed1)
+
+bool irdastop = 0, distancestop = 0, slowspeed = 0;
 
 //----------------------//motor driver - pins
 const char inaPin = 47;
@@ -128,7 +130,7 @@ void num9()
 int pwm_encoder(int pwmstart) {
   int encoder_pwm = pwmstart, pwm01, pwm10, t1, t2 = 0;
   t1 = millis();
-  while (t2 - t1 < 5000) {
+  while (t2 - t1 < 10000) {
     t2 = millis();
 
     while (digitalRead(3) == 0) {
@@ -214,6 +216,8 @@ void setup() {
 
   speed1 = pwm_encoder(speed1);
 
+  speedstraight = speed1 - 10;   
+
   for (int i = 0; i < 500; i++) {
     pinMode(buzzer, OUTPUT);
     digitalWrite(buzzer, HIGH);
@@ -224,18 +228,21 @@ void setup() {
 }
 
 void loop() {
- 
+
   if (irdastop || distancestop) {
     analogWrite(pwm, 0);  //start the engine
+  } else if (slowspeed) {
+    analogWrite(pwm,speedstraight);
   } else {
     analogWrite(pwm, speed1);  //start the engine
   }
-  //------------------------------------------------------------------------// check signals
+  
+    //------------------------------------------------------------------------// check signals
 
-  /*if (Serial2.available()) {
-      irda = Serial2.read();
-      Serial.println(irda);
-    }*/
+    /*if (Serial2.available()) {
+        irda = Serial2.read();
+        Serial.println(irda);
+      }*/
   if (Serial2.available()) {
     irda = Serial2.read();
     if ((irda == 0) || (irda == 1) || (irda == 3) || (irda == 4)) {  //if red,red+yellow,blinking green,yellow
@@ -347,13 +354,19 @@ void loop() {
       newangle -= 256;
     }
     newangle *= -1; // reverse the sign of angle
-    //---------------------------------------------------------//if the values are inapropriate
-    //   if ((newangle >= (angle - 7)) || (newangle <= (angle + 7))) {
+
+    if (abs(newangle) < 15) {
+      //slowspeed=1;
+      //newangle /=;
+    }else{
+      slowspeed=0;
+    }
+
     angle = newangle;
-    //  }
 
-    angle *= 2;   // mechanic coefficient
 
+    angle *= 18 ;   // mechanic coefficient
+angle /=8;
     angle = angle + 90;
 
     //

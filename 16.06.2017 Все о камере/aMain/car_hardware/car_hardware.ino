@@ -35,10 +35,10 @@ int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incom
 bool debug = 0;
 bool stopline;
 int angle;
-
+int irdacount = 0;
 int speedstraight; //less then main (speed1)
 
-bool irdastop = 0, distancestop = 0, slowspeed = 0;
+bool irdastop = 0, distancestop = 0, slowspeed = 0, stopsign = 0, isgreenlight = 0;
 
 //----------------------//motor driver - pins
 const char inaPin = 47;
@@ -216,7 +216,7 @@ void setup() {
 
   speed1 = pwm_encoder(speed1);
 
-  speedstraight = speed1 - 10;   
+  speedstraight = speed1 - 10;
 
   for (int i = 0; i < 500; i++) {
     pinMode(buzzer, OUTPUT);
@@ -232,27 +232,38 @@ void loop() {
   if (irdastop || distancestop) {
     analogWrite(pwm, 0);  //start the engine
   } else if (slowspeed) {
-    analogWrite(pwm,speedstraight);
+    analogWrite(pwm, speedstraight);
   } else {
     analogWrite(pwm, speed1);  //start the engine
   }
-  
-    //------------------------------------------------------------------------// check signals
 
-    /*if (Serial2.available()) {
-        irda = Serial2.read();
-        Serial.println(irda);
-      }*/
+  //------------------------------------------------------------------------// check signals
+
+  /* if (Serial2.available()) {
+       irda = Serial2.read();u
+       Serial.println(irda);
+     }*/
+  // irdacount++;
   if (Serial2.available()) {
     irda = Serial2.read();
-    if ((irda == 0) || (irda == 1) || (irda == 3) || (irda == 4)) {  //if red,red+yellow,blinking green,yellow
-      Serial.println(irda);
-      irdastop = 1;
+    if ((irda == 0) || (irda == 1) || (irda == 3) || (irda == 4)) {
+      irdastop = 1;                                                     //if red,red+yellow,blinking green,yellow
 
     } else {
       irdastop = 0;
     }
   }
+
+
+
+  if (Serial2.available()) {                  //////t2irda = 0, tstartirda =0 ;
+    irda = Serial2.read();
+    if (irda == 2) {            //if green
+      //  Serial.println(irda);
+      isgreenlight = 1;
+    }
+  }
+
 
 
   /*
@@ -268,14 +279,15 @@ void loop() {
 
 
   //----------------------------------// stop sigh
-  /*     if (Serial2.available()) {
-         if (Serial2.read() == 6) {
-           analogWrite(pwm, 0);
-           delay(5000);
+  if (!stopsign) {                // if we havent seen it befor
+    if (Serial2.available()) {
+      if (Serial2.read() == 6) {
+        stopsign = 1;               // we have found it once
+        delay(5000);
+      }
+    }
+  }
 
-         }
-       }
-  */
   //------------------------------------//
   //---------------------------------------------------------------------//distance attributive
   d1 = 5222 / (analogRead(distSensor0) - 13);    //changes values into cm
@@ -283,15 +295,15 @@ void loop() {
   d3 = 5222 / (analogRead(distSensor2) - 13);
 
 
-  if (((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) && (d1 > 0) && (d2 > 0) && (d3 > 0)) {
+  if (((d1 <= distanceEdge) || (d2 <= distanceEdge) /*|| (d3 <= distanceEdge)*/) && (d1 > 0) && (d2 > 0) && (d3 > 0)) {
     distancestop = 1;
     if (debug) {
-      Serial.print(d1);
-      Serial.print(" ");
-      Serial.print(d2);
-      Serial.print(" ");
-      Serial.print(d1);
-      Serial.println(" ");
+      /*   Serial.print(d1);
+         Serial.print(" ");
+         Serial.print(d2);
+         Serial.print(" ");
+         Serial.print(d1);
+         Serial.println(" ");*/
       Serial.println("barrier");
     }
   } else {
@@ -353,21 +365,25 @@ void loop() {
     {
       newangle -= 256;
     }
-    newangle *= -1; // reverse the sign of angle
-
-    if (abs(newangle) < 15) {
-      //slowspeed=1;
-      //newangle /=;
-    }else{
-      slowspeed=0;
+    // newangle *= -1; // reverse the sign of angle
+    //Serial.println(newangle);
+    if (newangle > 30) {
+      newangle = angle;
+      //   Serial.println(newangle);
+      /*   digitalWrite(inaPin,HIGH);
+          digitalWrite(inbPin,LOW);
+          analogWrite(pwm,speed1);
+          delay(3000);
+          digitalWrite(inaPin,LOW);
+          digitalWrite(inbPin,HIGH);*/
     }
 
     angle = newangle;
 
 
-    angle *= 18 ;   // mechanic coefficient
-angle /=8;
-    angle = angle + 90;
+    angle *= 10 ;   // mechanic coefficient
+    angle /= 6;
+    angle = 90 - angle;
 
     //
     //     Serial.print(angle);

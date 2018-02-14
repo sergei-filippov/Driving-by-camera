@@ -41,9 +41,9 @@ int speedstraight; //less then main (speed1)
 bool irdastop = 0, distancestop = 0, slowspeed = 0, stopsign = 0, isgreenlight = 0;
 
 //----------------------//motor driver - pins
-const char inaPin = 47;
+const char inaPin = 47;   // to define direction 
 const char inbPin = 48;
-const char pwm = 13;
+const char pwm = 13;    // value  of speed
 //-------------------------//
 const char distSensor0 = A13;
 const char distSensor1 = A14;
@@ -52,7 +52,7 @@ const char distSensor2 = A15;
 const char buzzer = 59;
 
 
-void num_all(int n) {
+void num_all(int n) {     // to show numbers on tutorshield
   switch (n) {
 
     case 0: num0(); break;
@@ -66,8 +66,10 @@ void num_all(int n) {
     case 8: num8(); break;
     case 9: num9(); break;
   }
-}
-void num0()
+}  
+
+               // defines pins to show numbers
+void num0()   
 {
   digitalWrite(6, LOW); digitalWrite(7, LOW);
   digitalWrite(8, LOW); digitalWrite(9, LOW);
@@ -126,14 +128,16 @@ void num9()
 {
   num8();
   digitalWrite(10, HIGH);
-}
+}  
+
+//----------------------------------------------------// gives you time to change pwm value
 int pwm_encoder(int pwmstart) {
   int encoder_pwm = pwmstart, pwm01, pwm10, t1, t2 = 0;
   t1 = millis();
   while (t2 - t1 < 10000) {
     t2 = millis();
 
-    while (digitalRead(3) == 0) {
+    while (digitalRead(3) == 0) {      //encoder pins on tutorshield
       if (digitalRead(2) == 0) {
         encoder_pwm--;
         break;
@@ -149,10 +153,10 @@ int pwm_encoder(int pwmstart) {
     }
     pwm10 = encoder_pwm / 10;
     pwm01 = encoder_pwm % 10;
-    digitalWrite(4, HIGH);
+    digitalWrite(4, HIGH);     // change the digit ot tutor shield
     digitalWrite(5, LOW);
     num_all(pwm01);
-    delay(10);
+    delay(10);            
     digitalWrite(4, LOW);
     digitalWrite(5, HIGH);
     num_all(pwm10);
@@ -162,7 +166,8 @@ int pwm_encoder(int pwmstart) {
 }
 
 
-void setup() {
+void setup() { 
+  //--------------------------------// beginning of the program
   for (int i = 0; i < 500; i++) {
     pinMode(buzzer, OUTPUT);
     digitalWrite(buzzer, HIGH);
@@ -171,7 +176,7 @@ void setup() {
     delay(1);
   }
 
-  // -----------------------------------------------//encoder
+  // -----------------------------------------------//tutorshield
   pinMode(2, INPUT); pinMode(3, INPUT); // encoder               // pins 2-12 are reserved
 
   pinMode(6, OUTPUT); pinMode(7, OUTPUT);

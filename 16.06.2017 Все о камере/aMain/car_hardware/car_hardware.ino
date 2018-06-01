@@ -5,7 +5,7 @@
   2-3 encoder
   2-12 LEDs
 
-  27 - serva
+  53 - serva
   51 pwm motor
   52-53 ina inb // motordriver
 

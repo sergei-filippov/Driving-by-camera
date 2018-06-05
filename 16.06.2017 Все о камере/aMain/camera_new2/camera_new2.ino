@@ -4,7 +4,7 @@
 
 #define W 128       // width of the window
 #define H 96         // height of the window
-#define debugbutton 22
+#define debugbutton 22   // connect with gnd
 
 TVout tv;
 pollserial pserial;  //instead of Serial
@@ -193,7 +193,7 @@ void loop() {
     averageangle+=15;
   }*/
   Serial2.write(averageangle);
-  pserial.print(averageangle);
+  pserial.println(averageangle);
   //-----------------------------------------------------------------------------------//
   //-----------------------------------------------------------------------------------//
   if (debug) {

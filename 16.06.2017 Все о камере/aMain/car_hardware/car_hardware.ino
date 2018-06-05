@@ -32,7 +32,7 @@ Servo servo;
 
 
 int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte, currentspeed, newangle;
-bool debug = 0;
+bool debug = 1;
 bool stopline;
 int angle;
 int irdacount = 0;
@@ -41,7 +41,7 @@ int speedstraight; //less then main (speed1)
 bool irdastop = 0, distancestop = 0, slowspeed = 0, stopsign = 0, isgreenlight = 0;
 
 //----------------------//motor driver - pins
-const char inaPin = 47;   // to define direction 
+const char inaPin = 47;   // to define direction
 const char inbPin = 48;
 const char pwm = 13;    // value  of speed
 //-------------------------//
@@ -66,10 +66,10 @@ void num_all(int n) {     // to show numbers on tutorshield
     case 8: num8(); break;
     case 9: num9(); break;
   }
-}  
+}
 
-               // defines pins to show numbers
-void num0()   
+// defines pins to show numbers
+void num0()
 {
   digitalWrite(6, LOW); digitalWrite(7, LOW);
   digitalWrite(8, LOW); digitalWrite(9, LOW);
@@ -128,7 +128,7 @@ void num9()
 {
   num8();
   digitalWrite(10, HIGH);
-}  
+}
 
 //----------------------------------------------------// gives you time to change pwm value
 int pwm_encoder(int pwmstart) {
@@ -156,7 +156,7 @@ int pwm_encoder(int pwmstart) {
     digitalWrite(4, HIGH);     // change the digit ot tutor shield
     digitalWrite(5, LOW);
     num_all(pwm01);
-    delay(10);            
+    delay(10);
     digitalWrite(4, LOW);
     digitalWrite(5, HIGH);
     num_all(pwm10);
@@ -166,7 +166,7 @@ int pwm_encoder(int pwmstart) {
 }
 
 
-void setup() { 
+void setup() {
   //--------------------------------// beginning of the program
   for (int i = 0; i < 500; i++) {
     pinMode(buzzer, OUTPUT);
@@ -206,7 +206,7 @@ void setup() {
   digitalWrite(inbPin, HIGH);
 
   if (debug) {
-    Serial.begin(9600);    //pc connection
+    Serial.begin(115200);    //pc connection
   }
 
   Serial1.begin(115200);   //seeeduino angle
@@ -235,12 +235,12 @@ void setup() {
 void loop() {
 
   if (irdastop || distancestop) {
-    analogWrite(pwm, 0);  //start the engine
+    analogWrite(pwm, 0);
   } else if (slowspeed) {
     analogWrite(pwm, speedstraight);
   } else {
     analogWrite(pwm, speed1);  //start the engine
-  }
+ }
 
   //------------------------------------------------------------------------// check signals
 
@@ -371,7 +371,7 @@ void loop() {
       newangle -= 256;
     }
     // newangle *= -1; // reverse the sign of angle
-    //Serial.println(newangle);
+    Serial.println(newangle);
     if (newangle > 30) {
       newangle = angle;
       //   Serial.println(newangle);

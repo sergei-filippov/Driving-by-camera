@@ -51,9 +51,9 @@
 //  start to rotate CCW direction.
 
 
-const int inaPin = 13;
-const int inbPin = 12;
-const int pwmPin = 3;
+const int inaPin = 47;
+const int inbPin = 48;
+const int pwmPin = 49;
 const int diagaPin = 10;
 const int diagbPin = 12;
 const int buttonPin = 2;
@@ -112,7 +112,7 @@ void loop() {
    digitalWrite(inaPin, HIGH);
   digitalWrite(inbPin, LOW);
   // for(int i = 0;i<255;i+=2){
-analogWrite(pwmPin, 125);
+analogWrite(pwmPin, 70);
 
 /*Serial.print(analogRead(diagaPin));
  Serial.print(" ");

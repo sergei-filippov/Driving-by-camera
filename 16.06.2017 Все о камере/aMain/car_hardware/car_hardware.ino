@@ -31,11 +31,13 @@ Servo servo;
 //------------------------------//
 
 
-int speed1, irda, d1, d2, d3, distanceEdge, speedBeforCrossing, slowSpeed, incomingByte, currentspeed, newangle;
+int  irda, d1 = 0, d2 = 0, d3 = 0, speedBeforCrossing, slowSpeed, incomingByte, currentspeed, newangle;
 bool debug = 1;
 bool stopline;
 int angle;
 int irdacount = 0;
+int speed1 = 70;         // usual speed
+int  distanceEdge = 40;   // max distance without barrier
 int speedstraight; //less then main (speed1)
 
 bool irdastop = 0, distancestop = 0, slowspeed = 0, stopsign = 0, isgreenlight = 0;
@@ -215,8 +217,7 @@ void setup() {
 
 
 
-  speed1 = 70;         // usual speed
-  distanceEdge = 30;   // max distance without barrier
+
 
 
   speed1 = pwm_encoder(speed1);
@@ -240,7 +241,7 @@ void loop() {
     analogWrite(pwm, speedstraight);
   } else {
     analogWrite(pwm, speed1);  //start the engine
- }
+  }
 
   //------------------------------------------------------------------------// check signals
 
@@ -251,6 +252,7 @@ void loop() {
   // irdacount++;
   if (Serial2.available()) {
     irda = Serial2.read();
+      Serial.println(irda);
     if ((irda == 0) || (irda == 1) || (irda == 3) || (irda == 4)) {
       irdastop = 1;                                                     //if red,red+yellow,blinking green,yellow
 
@@ -300,16 +302,16 @@ void loop() {
   d3 = 5222 / (analogRead(distSensor2) - 13);
 
 
-  if (((d1 <= distanceEdge) || (d2 <= distanceEdge) /*|| (d3 <= distanceEdge)*/) && (d1 > 0) && (d2 > 0) && (d3 > 0)) {
+  if (((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) && (d1 > 0) && (d2 > 0) && (d3 > 0)) {
     distancestop = 1;
     if (debug) {
-      /*   Serial.print(d1);
-         Serial.print(" ");
-         Serial.print(d2);
-         Serial.print(" ");
-         Serial.print(d1);
-         Serial.println(" ");*/
-      Serial.println("barrier");
+   /*   Serial.print(d1);
+      Serial.print(" ");
+      Serial.print(d2);
+      Serial.print(" ");
+      Serial.print(d3);
+      Serial.println(" ");
+      Serial.println("barrier");*/
     }
   } else {
     distancestop = 0;

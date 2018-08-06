@@ -52,6 +52,11 @@ const char distSensor1 = A14;
 const char distSensor2 = A15;
 //----------------------------//
 const char buzzer = 59;
+//-----------------------------//
+const char rightLight = 26;
+const char leftLight = 27;
+//----------------------------//
+
 
 
 void num_all(int n) {     // to show numbers on tutorshield
@@ -200,6 +205,11 @@ void setup() {
   pinMode(inbPin, OUTPUT);   //num 4 on driver
   pinMode(pwm, OUTPUT);      //num 3 on driver
 
+  //---------------------------------------------// lights
+  pinMode(rightLight, OUTPUT);
+  pinMode(leftLight, OUTPUT);
+  digitalWrite(leftLight, HIGH);
+  digitalWrite(rightLight, HIGH);
 
 
 
@@ -252,7 +262,7 @@ void loop() {
   // irdacount++;
   if (Serial2.available()) {
     irda = Serial2.read();
-      Serial.println(irda);
+    Serial.println(irda);
     if ((irda == 0) || (irda == 1) || (irda == 3) || (irda == 4)) {
       irdastop = 1;                                                     //if red,red+yellow,blinking green,yellow
 
@@ -303,15 +313,15 @@ void loop() {
 
 
   if (((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) && (d1 > 0) && (d2 > 0) && (d3 > 0)) {
-    distancestop = 1;
+    //  distancestop = 1;
     if (debug) {
-   /*   Serial.print(d1);
-      Serial.print(" ");
-      Serial.print(d2);
-      Serial.print(" ");
-      Serial.print(d3);
-      Serial.println(" ");
-      Serial.println("barrier");*/
+      /*   Serial.print(d1);
+         Serial.print(" ");
+         Serial.print(d2);
+         Serial.print(" ");
+         Serial.print(d3);
+         Serial.println(" ");
+         Serial.println("barrier");*/
     }
   } else {
     distancestop = 0;
@@ -373,7 +383,7 @@ void loop() {
       newangle -= 256;
     }
     // newangle *= -1; // reverse the sign of angle
-    Serial.println(newangle);
+    //\   Serial.println(newangle);
     if (newangle > 30) {
       newangle = angle;
       //   Serial.println(newangle);
@@ -392,9 +402,8 @@ void loop() {
     angle /= 6;
     angle = 90 - angle;
 
-    //
-    //     Serial.print(angle);
-    //   Serial.print(" ");
+
+    Serial.print(angle); Serial.println(" ");
 
     servo.write(angle);
 

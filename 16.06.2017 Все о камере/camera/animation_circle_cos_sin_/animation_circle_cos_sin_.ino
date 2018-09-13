@@ -15,7 +15,7 @@
 
 #define W 128
 #define H 96
-
+    
 TVout tv;
 unsigned char x, y;
 unsigned char c;

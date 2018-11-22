@@ -30,18 +30,19 @@ void setup()  {
   pinMode(debugbutton, INPUT);
   digitalWrite(debugbutton, HIGH);
 
-  if (digitalRead(debugbutton) == 1) {
+  /*if (digitalRead(debugbutton) == 1) {
     debug = 0;
-  }
+  }*/
   if (debug) {
     pserial.begin(115200);
   }
+  
 
   for (int i = 0; i < 5; i++) {
     preangles[i] = 0;
   }
 
-  Serial2.begin(115200);  //angle to mega
+  Serial3.begin(115200);  //angle to mega
 
   tv.begin(PAL, W, H);
   initOverlay();
@@ -170,7 +171,11 @@ void loop() {
   anglem = anglem / (ncountline); // how many lines do we count
   anglemi = anglem;
 
-  // Serial3.write(anglemi);
+  // Serial3.print(anglemi);
+   if(debug){
+      pserial.println(anglemi);
+   }
+   
 
   if (countangles == 5) {
     countangles = 0;
@@ -192,7 +197,7 @@ void loop() {
   }else if(averageangle <=-28){
     averageangle+=15;
   }*/
-  Serial2.write(averageangle);
+  Serial3.write(averageangle);
   pserial.println(averageangle);
   //-----------------------------------------------------------------------------------//
   //-----------------------------------------------------------------------------------//

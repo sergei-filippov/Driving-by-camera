@@ -85,7 +85,7 @@ void loop() {
 
   // draw bounding box
   tv.fill(0);
-  if (found) {
+ // if (found) {
     tv.draw_line((maxX+minX)/2-3,maxY,(maxX+minX)/2-3,minY,1);     //vertical line
 
     /*  tv.draw_line(minX, minY, maxX, minY, 1);
@@ -95,7 +95,7 @@ void loop() {
 
     // sprintf(s, "%d, %d", ((maxX + minX) / 2), ((maxY + minY) / 2));
     tv.print(0, 0, s);
-  }
+ // }
   tv.draw_line(0, 0, 0, 96, 1);       // drowing a rectangle
   tv.draw_line(0, 95, 128, 95, 1);
   tv.draw_line(127, 94, 127, 0, 1);

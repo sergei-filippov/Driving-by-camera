@@ -36,8 +36,10 @@ bool debug = 1;
 bool stopline;
 int angle;
 int irdacount = 0;
+
 int speed1 = 70;         // usual speed
 int  distanceEdge = 40;   // max distance without barrier
+
 int speedstraight; //less then main (speed1)
 
 bool irdastop = 0, distancestop = 0, slowspeed = 0, stopsign = 0, isgreenlight = 0;
@@ -221,9 +223,9 @@ void setup() {
     Serial.begin(115200);    //pc connection
   }
 
-  Serial1.begin(115200);   //seeeduino angle
-  Serial2.begin(115200); //irda
-  Serial3.begin(115200); //seeeduino stop line
+ // Serial3.begin(115200);   //seeeduino angle
+  Serial3.begin(115200); //irda
+  Serial3.begin(115200); //seeeduino angle
 
 
 
@@ -255,13 +257,13 @@ void loop() {
 
   //------------------------------------------------------------------------// check signals
 
-  /* if (Serial2.available()) {
-       irda = Serial2.read();u
+  /* if (Serial1.available()) {
+       irda = Serial1.read();u
        Serial.println(irda);
      }*/
   // irdacount++;
-  if (Serial2.available()) {
-    irda = Serial2.read();
+  if (Serial1.available()) {
+    irda = Serial1.read();
     Serial.println(irda);
     if ((irda == 0) || (irda == 1) || (irda == 3) || (irda == 4)) {
       irdastop = 1;                                                     //if red,red+yellow,blinking green,yellow
@@ -273,8 +275,8 @@ void loop() {
 
 
 
-  if (Serial2.available()) {                  //////t2irda = 0, tstartirda =0 ;
-    irda = Serial2.read();
+  if (Serial1.available()) {                  //////t2irda = 0, tstartirda =0 ;
+    irda = Serial1.read();
     if (irda == 2) {            //if green
       //  Serial.println(irda);
       isgreenlight = 1;
@@ -285,8 +287,8 @@ void loop() {
 
   /*
        //----------------------------------//pedestrian crossing
-     if (Serial2.available()) {
-       if (Serial2.read() == 5 ) {
+     if (Serial1.available()) {
+       if (Serial1.read() == 5 ) {
          analogWrite(pwm, slowSpeed);
        }
      }
@@ -297,8 +299,8 @@ void loop() {
 
   //----------------------------------// stop sigh
   if (!stopsign) {                // if we havent seen it befor
-    if (Serial2.available()) {
-      if (Serial2.read() == 6) {
+    if (Serial1.available()) {
+      if (Serial1.read() == 6) {
         stopsign = 1;               // we have found it once
         delay(5000);
       }
@@ -313,7 +315,7 @@ void loop() {
 
 
   if (((d1 <= distanceEdge) || (d2 <= distanceEdge) || (d3 <= distanceEdge)) && (d1 > 0) && (d2 > 0) && (d3 > 0)) {
-    //  distancestop = 1;
+      distancestop = 1;
     if (debug) {
       /*   Serial.print(d1);
          Serial.print(" ");
@@ -334,8 +336,8 @@ void loop() {
      /* Serial.print(read1);
        Serial.print(" \n");*/
   /*  if (read1 == 1) {
-      if (Serial2.available()) {
-        irda = Serial2.read();
+      if (Serial1.available()) {
+        irda = Serial1.read();
 
         while ((irda == 0) || (irda == 1) || (irda == 4) || (irda == 6) || (irda == 3) ) //if red,red-yellow,yellow,stop sign, blinking green
         {
@@ -344,7 +346,7 @@ void loop() {
           analogWrite(pwm, 0);
           delay(100);
           //servo.write(45);
-          irda = Serial2.read();
+          irda = Serial1.read();
         }
 
       }
@@ -352,7 +354,7 @@ void loop() {
     }*/
 
   /*
-    irda = Serial2.read();
+    irda = Serial1.read();
     if (irda == 0 || irda == 1 || irda == 4) {
       speed1 = speedBeforCrossing;
     }
@@ -369,21 +371,21 @@ void loop() {
     }
   */
   //-----------------------------------------------------------//read from camera
-  if (Serial1.available()) {
-    // incomingByte = Serial1.read();
+  if (Serial3.available()) {
+    // incomingByte = Serial3.read();
 
-    newangle = Serial1.read();
+    newangle = Serial3.read();
 
-    /*       Serial.print(newangle);
-            Serial.print(" ");
-            Serial.println(angle);*/
+         //  Serial.println(newangle);
+          //  Serial.print(" ");
+          //  Serial.println(angle);
 
     if (newangle > 128)
     {
       newangle -= 256;
     }
     // newangle *= -1; // reverse the sign of angle
-    //\   Serial.println(newangle);
+    //   Serial.println(newangle);
     if (newangle > 30) {
       newangle = angle;
       //   Serial.println(newangle);
@@ -403,7 +405,7 @@ void loop() {
     angle = 90 - angle;
 
 
-    Serial.print(angle); Serial.println(" ");
+  //  Serial.print(angle); Serial.println(" ");
 
     servo.write(angle);
 
@@ -415,9 +417,9 @@ void loop() {
 
   }
   //----------------------------------------------------------//
-  /*if (Serial1.available() > 0) {
+  /*if (Serial3.available() > 0) {
       // read the oldest byte in the serial buffer:
-      incomingByte = Serial1.read();
+      incomingByte = Serial3.read();
       Serial.print(incomingByte);
       Serial.print(" \n");
     }*/

@@ -33,10 +33,10 @@ float cosHto60, cosHto30;
 void setup()  {
 
   if (debug) {
-    pserial.begin(9600);
+    pserial.begin(115200);
   }
 
-  //Serial3.begin(9600);  //angle to mega
+  Serial3.begin(115200);  //angle to mega
 
   tv.begin(PAL, W, H);
   initOverlay();
@@ -175,7 +175,7 @@ for(x=44;x<128;x++){
   angle *= -1;
 
 }
-//Serial3.write(angle);  // angle to mega
+Serial3.write(angle);  // angle to mega
 tv.fill(0);
 if (debug) {
   tv.print(5, 5, firstx);

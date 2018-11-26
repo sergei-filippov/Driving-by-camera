@@ -11,28 +11,19 @@ pollserial pserial;  //instead of Serial
 
 bool debug = 1;  // for debug
 
-  int ncountline = 5;  // how many lines we count in one frame 
+  int ncountline = 1;  // how many lines we count in one frame 
   int deltaline = H/ncountline;  // distance between lines in the frame which we count 
 
   double *angles = new double[ncountline];   // array for all angles
-  int *coeffAngle  = new int [ncountline]; //= {100,70,50,30,20,10};   // furtherer line - smaller value // in percents
+  double coeffAngle[]= {100,70,50,30,20,10};   // furtherer line - smaller value // in percents
 
 
-int firstline =1; // first line from top we count 
-
-
-bool c;  // value of the current pixel
-unsigned char x, y;       
-unsigned char linew[H], xstart = W - 1, xend = 0; 
-double tgangleOneLine;  // tg of the angle
-double angleOneLine, angleMain;
-
-
-int position1=0; // for the array of angles
+int firstline =90; // first line from top we count 
+       
+unsigned char linew[H];
 
 
 int xshift = 0;  // amount of px to shift middle of the line to reduce the angle
-int midx = 0; //(xendm[y] + xstartm[y]) / 2)
 
 void setup()  {
   
@@ -47,10 +38,7 @@ void setup()  {
     pserial.begin(115200);    
   }
   
-
-  
-
-  Serial3.begin(115200);  //transmit angle to mega
+ Serial2.begin(115200);  //transmit angle to mega
 
   tv.begin(PAL, W, H);
   initOverlay();
@@ -93,22 +81,34 @@ ISR(INT0_vect) {
 void loop() {
   tv.capture();
 
- 
+ double angleMain=0;
+ int position1=0;
   tv.fill(INVERT);       // if tracking dark objects
+  
 
-  for (y = firstline; y < H; y += deltaline) {
+  
+ // for (y = firstline; y <H; y += deltaline) {
+   int y=firstline;
+
+    int xstart=0, xend=H,midx;
+    double tgangleOneLine, angleOneLine;  // tg of the angle
     bool islinestart=0;
     bool iscrossing=0;
-    for (x = 0; x < W; x += 1) {
-      c = tv.get_pixel(x, y);
-      
+
+    
+    for (int x = 0; x < W; x += 1) {
+     bool c = tv.get_pixel(x, y);
+      // pserial.print(c);pserial.print(" ");
       if(c && !islinestart){             // calculate the begining and the end of the line in onw row
         xstart = x;
         islinestart=1;
+       // pserial.print( xstart);pserial.print(" "); pserial.print(xend); pserial.println();
       }
       if(!c && islinestart){
         xend = x;
-      }
+        //pserial.print(xend); pserial.println(" ");
+        break;
+        }
     }
     
     if ((xend - xstart) > 70) {   //if crossing  - move forward
@@ -132,34 +132,39 @@ void loop() {
     //-------*-----------------------------------------------//
  
     midx = ((xend + xstart) / 2);  // middle point in the black segment of line
+    
     tgangleOneLine = atan(1.0 * (midx - (W / 2)) / ((H - y) + 90));
     angleOneLine = (tgangleOneLine) * 57.2956;  // real angle
-    angles[position1] = angleOneLine * coeffAngle[position1];  // changed angle
+    angles[position1] = angleOneLine * 1;  // changed angle //coeff
+   // pserial.println(angles[position1]);
     position1++;
-    
+  // pserial.println(angles[0]);
     tv.fill(0);  // to draw
     if(debug){
-      tv.draw_line(xstart, y, xend, y , 1);
+    
     }
     tv.fill(INVERT); // to get pixel
-  }
+ // }
   
-  for(int i = 0;i<ncountline;i++){
-    angleMain+=angles[i];
-  }
+//  for(int i = ncountline;i>0;i--){
+    angleMain=angles[0];
+    pserial.println(angleMain); 
+ // }
   angleMain /= ncountline; // how many lines do we count
 
    if(debug){
-      pserial.println(angleMain);
+     // pserial.println(angleMain);
    }
    
    tv.fill(0);
-  Serial3.write((int)angleMain);  // transmit ot mega
+  Serial2.write((int)angleMain);  // transmit ot mega
   //-----------------------------------------------------------------------------------//
   //-----------------------------------------------------------------------------------//
   if (debug) {
     // pserial.println("STOP");
     tv.print(120, 80, angleMain );
+
+  tv.draw_line(xstart, y, xend, y , 1);
 
     tv.draw_line(0, 0, 0, H - 1, 1);         // drawing a rectangle
     tv.draw_line(0, H - 1, W - 1, H - 1, 1);
@@ -167,9 +172,10 @@ void loop() {
     tv.draw_line(W - 1, 0, 0, 0, 1);
   }
 
- 
+
+
   tv.resume();
-  // tv.delay(1000);
+ //  tv.delay(1000);
   tv.delay_frame(1);
 
 }
